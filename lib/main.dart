@@ -1,14 +1,16 @@
 import 'package:cinemabooking/config/theme.dart';
-import 'package:cinemabooking/views/register_screen.dart';
+import 'package:cinemabooking/features/booking/providers/booking_provider.dart';
+import 'package:cinemabooking/features/booking/views/booking_history_view.dart';
+import 'package:cinemabooking/features/cinema/providers/cinema_provider.dart';
+import 'package:cinemabooking/features/cinema/views/cinema_list_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'providers/cinema_provider.dart';
-import 'providers/booking_provider.dart';
-import 'providers/auth_provider.dart';
-import 'views/cinema_list_view.dart';
-import 'views/booking_history_view.dart';
-import 'views/splash_screen.dart';
-import 'views/login_screen.dart';
+import 'features/auth/providers/auth_provider.dart';
+import 'features/auth/views/splash_screen.dart';
+import 'features/auth/views/login_screen.dart';
+import 'features/auth/views/register_screen.dart';
+import 'features/profile/providers/profile_provider.dart';
+import 'features/profile/views/profile_view.dart';
 
 void main() {
   runApp(const MyApp());
@@ -24,6 +26,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => CinemaProvider()),
         ChangeNotifierProvider(create: (_) => BookingProvider()),
         ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => ProfileProvider()),
       ],
       child: MaterialApp(
         title: 'Cinema Booking',
@@ -53,6 +56,7 @@ class MyApp extends StatelessWidget {
           '/register': (context) => const RegisterScreen(),
           '/home': (context) => const AuthGate(child: CinemaListView()),
           '/history': (context) => const AuthGate(child: BookingHistoryView()),
+          '/profile': (context) => const AuthGate(child: ProfileView()),
         },
       ),
     );
