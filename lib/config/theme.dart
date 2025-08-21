@@ -33,7 +33,6 @@ class AppTheme {
         primary: primary,
         secondary: primary,
         surface: surface,
-        background: background,
         error: error,
       ),
       textTheme: const TextTheme(
