@@ -9,10 +9,13 @@ import 'features/movies/movie_detail_screen.dart';
 import 'features/booking/booking_viewmodel.dart';
 import 'features/booking/booking_screen.dart';
 import 'features/booking/booking_selection_screen.dart';
+import 'features/booking/booking_summary_screen.dart';
 import 'features/fnb/fnb_viewmodel.dart';
 import 'features/fnb/fnb_screen.dart';
 import 'features/payment/payment_viewmodel.dart';
 import 'features/payment/payment_screen.dart';
+import 'features/payment/payment_method_screen.dart';
+import 'features/payment/payment_success_screen.dart';
 
 class CinemaApp extends StatelessWidget {
   const CinemaApp({super.key});
@@ -44,7 +47,10 @@ class CinemaApp extends StatelessWidget {
           BookingSelectionScreen.routeName: (_) => const BookingSelectionScreen(),
           BookingScreen.routeName: (_) => const BookingScreen(),
           FnbScreen.routeName: (_) => const FnbScreen(),
+          BookingSummaryScreen.routeName: (_) => const BookingSummaryScreen(),
           PaymentScreen.routeName: (_) => const PaymentScreen(),
+          PaymentMethodScreen.routeName: (_) => const PaymentMethodScreen(),
+          PaymentSuccessScreen.routeName: (_) => const PaymentSuccessScreen(),
         },
       ),
     );
