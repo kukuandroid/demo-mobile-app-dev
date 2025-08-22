@@ -27,11 +27,28 @@ migrate_working_dir/
 **/doc/api/
 **/ios/Flutter/.last_build_id
 .dart_tool/
+.flutter-plugins
 .flutter-plugins-dependencies
+.flutter-plugins
+.packages
 .pub-cache/
 .pub/
-/build/
-/coverage/
+.buildlog/
+**/build/
+**/android/app/debug
+**/android/app/profile
+**/android/app/release
+.melos_tool/
+coverage/
+generated_plugin_registrant.dart
+
+# Flutter generated files
+.flutter-plugins
+.flutter-plugins-dependencies
+.flutter-versions
+.flutter-plugins
+.packages
+pubspec.lock
 
 # Symbolication related
 app.*.symbols
