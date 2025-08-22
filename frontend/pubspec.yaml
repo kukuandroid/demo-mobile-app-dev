@@ -1,0 +1,17 @@
+name: cinema_booking_app
+description: Flutter cinema booking app (MVVM) with fake backend via polling REST.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.6
+  http: ^1.2.2
+  provider: ^6.1.2
+
+flutter:
+  uses-material-design: true
