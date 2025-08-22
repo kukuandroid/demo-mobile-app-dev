@@ -20,7 +20,9 @@ const FILES = {
   showtimes: path.join(DATA_DIR, 'showtimes.json'),
   halls: path.join(DATA_DIR, 'halls.json'),
   reservations: path.join(DATA_DIR, 'reservations.json'),
-  versions: path.join(DATA_DIR, 'seat_versions.json')
+  versions: path.join(DATA_DIR, 'seat_versions.json'),
+  locations: path.join(DATA_DIR, 'locations.json'),
+  cinemas: path.join(DATA_DIR, 'cinemas.json')
 };
 
 async function ensureDataDir() {
@@ -66,14 +68,16 @@ function isExpired(res) {
 
 async function loadState() {
   await ensureDataDir();
-  const [movies, showtimes, halls, reservations, versions] = await Promise.all([
+  const [movies, showtimes, halls, reservations, versions, locations, cinemas] = await Promise.all([
     readJson(FILES.movies, []),
     readJson(FILES.showtimes, []),
     readJson(FILES.halls, []),
     readJson(FILES.reservations, []),
-    readJson(FILES.versions, {})
+    readJson(FILES.versions, {}),
+    readJson(FILES.locations, []),
+    readJson(FILES.cinemas, [])
   ]);
-  return { movies, showtimes, halls, reservations, versions };
+  return { movies, showtimes, halls, reservations, versions, locations, cinemas };
 }
 
 async function saveReservations(reservations) {
@@ -165,8 +169,19 @@ app.get('/api/movies/:id', async (req, res) => {
 
 app.get('/api/showtimes', async (req, res) => {
   const state = await loadState();
-  const { movieId } = req.query;
-  const items = movieId ? state.showtimes.filter(s => s.movieId === movieId) : state.showtimes;
+  const { movieId, cinemaId, date } = req.query;
+  let items = state.showtimes;
+  
+  if (movieId) {
+    items = items.filter(s => s.movieId === movieId);
+  }
+  if (cinemaId) {
+    items = items.filter(s => s.cinemaId === cinemaId);
+  }
+  if (date) {
+    items = items.filter(s => s.date === date);
+  }
+  
   res.json(items);
 });
 
@@ -175,6 +190,18 @@ app.get('/api/showtimes/:id', async (req, res) => {
   const st = state.showtimes.find(s => s.id === req.params.id);
   if (!st) return res.status(404).json({ error: 'Showtime not found' });
   res.json(st);
+});
+
+app.get('/api/locations', async (req, res) => {
+  const state = await loadState();
+  res.json(state.locations);
+});
+
+app.get('/api/cinemas', async (req, res) => {
+  const state = await loadState();
+  const { locationId } = req.query;
+  const items = locationId ? state.cinemas.filter(c => c.locationId === locationId) : state.cinemas;
+  res.json(items);
 });
 
 app.get('/api/halls/:hallId/seatmap', async (req, res) => {
