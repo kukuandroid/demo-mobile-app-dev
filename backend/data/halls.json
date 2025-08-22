@@ -1,0 +1,4 @@
+[
+  { "id": "h1", "name": "Hall 1", "layout": { "rows": 8, "cols": 12 } },
+  { "id": "h2", "name": "Hall 2", "layout": { "rows": 10, "cols": 14 } }
+]

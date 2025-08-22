@@ -1,41 +1,19 @@
-CineBook: Flutter Cinema Booking App
+# HOWTO
 
-
-🎬 Project Overview
-
-CineBook is a modern cinema booking app built with Flutter, providing a seamless and intuitive experience for browsing movies, selecting seats, and completing the booking process.
-
-✨ Features
-
-Browse & Details:
-
-- View a list of movies with details like synopsis, cast, and ratings.
-
-- Showtime Selection: Choose from available showtimes and cinemas.
-
-- Interactive Seat Picker: Select seats with real-time price calculation.
-
-- Booking Confirmation: Review a clear summary before payment.
-
-🚀 Getting Started
-Prerequisites
-Flutter SDK
-
-- VS Code or Android Studio with Flutter and Dart plugins
-
-Installation : 
-
-- Clone the repository
-
-- Navigate to the project:
-
-- cd cinebook
-
-- Install dependencies: flutter pub get
-
-Run the app:
-
-- flutter run
-
-🎨 Design & UI/UX
-The app features a clean, dark-themed UI for a visually appealing and responsive cinematic experience on mobile and tablet devices.
+1. Thoroughly document your code with clear comments and explanations.
+2. Contain both the frontend and backend repositories.
+3. To run the backend:
+   - Navigate to the backend directory: `cd backend`
+   - Install dependencies: `npm install`
+   - Start the server: `npm start`
+   - The backend will run at `http://localhost:4000`
+4. To run the frontend in simulator mode:
+   - Navigate to the frontend directory: `cd frontend`
+   - Install dependencies: `flutter pub get`
+   - For Android Studio:
+     - Open the project and launch an Android emulator.
+     - Run: `flutter run`
+   - For Xcode:
+     - Open the project in Xcode and launch an iOS simulator.
+     - Run: `flutter run`
+   - Ensure the frontend is configured to communicate with the backend at `http://localhost:4000`
