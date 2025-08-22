@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../core/network/api_client.dart';
-import '../booking/booking_screen.dart';
+import '../booking/booking_selection_screen.dart';
 import 'movie_models.dart';
 import 'movie_list_viewmodel.dart';
-import 'movie_service.dart';
 
 class MovieDetailScreen extends StatefulWidget {
   static const routeName = '/movie';
@@ -17,9 +15,7 @@ class MovieDetailScreen extends StatefulWidget {
 
 class _MovieDetailScreenState extends State<MovieDetailScreen>
     with SingleTickerProviderStateMixin {
-  late final MovieService _service;
   Movie? _movie;
-  List<Showtime> _showtimes = const [];
   bool _loading = true;
   String? _error;
 
@@ -29,7 +25,6 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    _service = MovieService(context.read<ApiClient>());
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _load();
     });
@@ -56,8 +51,6 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
         await listVm.load();
       }
       _movie = listVm.movies.firstWhere((m) => m.id == movieId);
-      _showtimes = listVm.showtimesByMovie[movieId] ??
-          await _service.fetchShowtimes(movieId: movieId);
     } catch (e) {
       _error = e.toString();
     } finally {
@@ -165,34 +158,36 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
           Text(_movie!.director),
           const SizedBox(height: 12),
         ],
-        const Divider(height: 24),
-        Text('Showtimes',
-            style: theme.textTheme.titleMedium
-                ?.copyWith(fontWeight: FontWeight.w700)),
-        const SizedBox(height: 8),
-        if (_showtimes.isEmpty)
-          const Text('No showtimes available')
-        else
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: _showtimes
-                .map((s) => ActionChip(
-                      label: Text(s.startTime),
-                      onPressed: () {
-                        Navigator.pushNamed(
-                          context,
-                          BookingScreen.routeName,
-                          arguments: {
-                            'movieId': s.movieId,
-                            'showtimeId': s.id,
-                            'hallId': s.hallId,
-                          },
-                        );
-                      },
-                    ))
-                .toList(),
+        const SizedBox(height: 24),
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed: () {
+              Navigator.pushNamed(
+                context,
+                BookingSelectionScreen.routeName,
+                arguments: {
+                  'movieId': _movie!.id,
+                },
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: theme.colorScheme.primary,
+              foregroundColor: theme.colorScheme.onPrimary,
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            child: const Text(
+              'Book Ticket',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
+        ),
       ],
     );
   }
