@@ -6,7 +6,9 @@ import '../movies/movie_models.dart';
 import '../movies/movie_list_viewmodel.dart';
 import 'booking_models.dart';
 import 'booking_selection_service.dart';
-import 'booking_screen.dart';
+import 'booking_service.dart';
+import 'seat_models.dart';
+import '../fnb/fnb_screen.dart';
 
 class BookingSelectionScreen extends StatefulWidget {
   static const routeName = '/booking-selection';
@@ -29,6 +31,12 @@ class _BookingSelectionScreenState extends State<BookingSelectionScreen> {
   Cinema? _selectedCinema;
   String? _selectedDate;
   ShowtimeSlot? _selectedShowtime;
+  
+  // Seat selection state
+  SeatMap? _seatMap;
+  final Set<String> _selectedSeats = {};
+  bool _loadingSeats = false;
+  late final BookingService _bookingService;
 
   bool _loading = true;
   String? _error;
@@ -37,6 +45,7 @@ class _BookingSelectionScreenState extends State<BookingSelectionScreen> {
   void initState() {
     super.initState();
     _service = BookingSelectionService(context.read<ApiClient>());
+    _bookingService = BookingService(context.read<ApiClient>());
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _load();
     });
@@ -142,24 +151,53 @@ class _BookingSelectionScreenState extends State<BookingSelectionScreen> {
     if (mounted) setState(() {});
   }
 
-  void _onShowtimeSelected(ShowtimeSlot showtime) {
+  void _onShowtimeSelected(ShowtimeSlot showtime) async {
     setState(() {
       _selectedShowtime = showtime;
+      _selectedSeats.clear();
+      _seatMap = null;
+      _loadingSeats = true;
     });
+
+    try {
+      _seatMap = await _bookingService.fetchSeatMap(showtime.hallId, showtime.id);
+    } catch (e) {
+      _error = e.toString();
+    } finally {
+      if (mounted) {
+        setState(() {
+          _loadingSeats = false;
+        });
+      }
+    }
   }
 
-  void _proceedToSeatSelection() {
-    if (_selectedShowtime == null) return;
+  void _toggleSeat(String seatId) {
+    if (_seatMap == null) return;
+    final status = _seatMap!.seats[seatId]?.status;
+    if (status != SeatStatus.available && !_selectedSeats.contains(seatId)) return;
+    
+    setState(() {
+      if (_selectedSeats.contains(seatId)) {
+        _selectedSeats.remove(seatId);
+      } else {
+        _selectedSeats.add(seatId);
+      }
+    });
+    
+    // Debug print to verify seat selection
+    print('Selected seats: $_selectedSeats');
+    print('Subtotal: ${_subtotal}');
+  }
 
-    Navigator.pushNamed(
-      context,
-      BookingScreen.routeName,
-      arguments: {
-        'movieId': _selectedShowtime!.movieId,
-        'showtimeId': _selectedShowtime!.id,
-        'hallId': _selectedShowtime!.hallId,
-      },
-    );
+  double get _subtotal {
+    if (_selectedShowtime == null) return 0.0;
+    return _selectedSeats.length * _selectedShowtime!.price;
+  }
+
+  void _proceedToFnB() {
+    if (_selectedSeats.isEmpty) return;
+    Navigator.pushNamed(context, FnbScreen.routeName);
   }
 
   @override
@@ -258,32 +296,248 @@ class _BookingSelectionScreenState extends State<BookingSelectionScreen> {
                       ],
 
                       if (_selectedShowtime != null) ...[
-                        const SizedBox(height: 32),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: _proceedToSeatSelection,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: theme.colorScheme.primary,
-                              foregroundColor: theme.colorScheme.onPrimary,
-                              padding: const EdgeInsets.symmetric(vertical: 16),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                            child: const Text(
-                              'Select Seats',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
+                        const SizedBox(height: 24),
+                        const Divider(),
+                        const SizedBox(height: 16),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('Select Your Seats',
+                                style: theme.textTheme.titleLarge),
+                            Text('${_selectedSeats.length} selected',
+                                style: theme.textTheme.titleMedium?.copyWith(
+                                  color: theme.colorScheme.primary,
+                                  fontWeight: FontWeight.bold,
+                                )),
+                          ],
                         ),
+                        const SizedBox(height: 16),
+                        if (_loadingSeats)
+                          const Center(child: CircularProgressIndicator())
+                        else if (_seatMap != null)
+                          _buildSeatLayout(theme),
+                        const SizedBox(height: 16),
+                        _buildSubtotalSection(theme),
                       ],
                     ],
                   ),
                 ),
+    );
+  }
+
+  Widget _buildSeatLayout(ThemeData theme) {
+    if (_seatMap == null) return const SizedBox();
+    
+    return Column(
+      children: [
+        // Screen indicator
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          margin: const EdgeInsets.only(bottom: 16),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.primaryContainer,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Text(
+            'SCREEN',
+            textAlign: TextAlign.center,
+            style: theme.textTheme.labelLarge?.copyWith(
+              color: theme.colorScheme.onPrimaryContainer,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        // Seat grid
+        SizedBox(
+          height: 300,
+          child: ListView.builder(
+            itemCount: _seatMap!.rows,
+            itemBuilder: (ctx, r) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 2),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Row label
+                    SizedBox(
+                      width: 20,
+                      child: Text(
+                        String.fromCharCode('A'.codeUnitAt(0) + r),
+                        style: theme.textTheme.labelSmall,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    // Seats
+                    for (int c = 0; c < _seatMap!.cols; c++)
+                      _buildSeatButton(r, c, theme),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+        const SizedBox(height: 16),
+        // Legend
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _buildLegendItem('Available', Colors.green, theme),
+            _buildLegendItem('Selected', Colors.amber, theme),
+            _buildLegendItem('Booked', Colors.grey, theme),
+            _buildLegendItem('Held', Colors.blueGrey, theme),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSeatButton(int r, int c, ThemeData theme) {
+    final id = String.fromCharCode('A'.codeUnitAt(0) + r) + (c + 1).toString();
+    final info = _seatMap!.seats[id];
+    Color bg;
+    
+    if (_selectedSeats.contains(id)) {
+      bg = Colors.amber;
+    } else if (info?.status == SeatStatus.booked) {
+      bg = Colors.grey;
+    } else if (info?.status == SeatStatus.held) {
+      bg = Colors.blueGrey;
+    } else {
+      bg = Colors.green;
+    }
+    
+    return Padding(
+      padding: const EdgeInsets.all(1),
+      child: GestureDetector(
+        onTap: () => _toggleSeat(id),
+        child: Container(
+          width: 24,
+          height: 24,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: bg,
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: Text(
+            (c + 1).toString(),
+            style: const TextStyle(
+              fontSize: 10,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLegendItem(String label, Color color, ThemeData theme) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 12,
+          height: 12,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(2),
+          ),
+        ),
+        const SizedBox(width: 4),
+        Text(
+          label,
+          style: theme.textTheme.labelSmall,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSubtotalSection(ThemeData theme) {
+    if (_selectedSeats.isEmpty) {
+      return Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surfaceVariant.withOpacity(0.5),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Text(
+          'Select seats to see pricing and continue',
+          style: theme.textTheme.titleMedium?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      );
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceVariant,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Selected Seats:',
+                style: theme.textTheme.titleMedium,
+              ),
+              Text(
+                _selectedSeats.join(', '),
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Subtotal:',
+                style: theme.textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                'RM${_subtotal.toStringAsFixed(2)}',
+                style: theme.textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: theme.colorScheme.primary,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: _proceedToFnB,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: theme.colorScheme.primary,
+                foregroundColor: theme.colorScheme.onPrimary,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: Text(
+                'Continue to F&B (${_selectedSeats.length} seat${_selectedSeats.length == 1 ? '' : 's'})',
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
