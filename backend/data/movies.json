@@ -1,0 +1,57 @@
+[
+  {
+    "id": "m1",
+    "title": "The Great Adventure",
+    "genre": ["Action", "Adventure"],
+    "durationMins": 125,
+    "rating": "PG-13",
+    "posterUrl": "https://lumiere-a.akamaihd.net/v1/images/hb_disneyplus_skywalkersaga_mobile_19267_e964ed2c.jpeg?region=0,0,640,400",
+    "synopsis": "A team ventures into the unknown to save their world.",
+    "cast": ["A. Star", "B. Nova", "C. Ray"],
+    "director": "Jane Doe"
+  },
+  {
+    "id": "m2",
+    "title": "Love In Pixels",
+    "genre": ["Romance", "Drama"],
+    "durationMins": 102,
+    "rating": "PG",
+    "posterUrl": "https://images.thedirect.com/media/article_full/star-wars-movie-release-schedule-disney-rey-the-mandalorian.jpg",
+    "synopsis": "Two coders find love while fixing legacy bugs.",
+    "cast": ["D. Heart", "E. Byte"],
+    "director": "John Roe"
+  },
+  {
+    "id": "m3",
+    "title": "Star Wars: A New Hope",
+    "genre": ["Action", "Adventure", "Sci-Fi"],
+    "durationMins": 121,
+    "rating": "PG",
+    "posterUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThkgLeV-aKuA1vDzqyu1SafL5W36Z83TL3WQ&s",
+    "synopsis": "Luke Skywalker joins forces with a Jedi Knight, a cocky pilot, a Wookiee and two droids to save the galaxy.",
+    "cast": ["Mark Hamill", "Harrison Ford", "Carrie Fisher"],
+    "director": "George Lucas"
+  },
+  {
+    "id": "m4",
+    "title": "Star Wars: The Empire Strikes Back",
+    "genre": ["Action", "Adventure", "Sci-Fi"],
+    "durationMins": 124,
+    "rating": "PG",
+    "posterUrl": "https://play-lh.googleusercontent.com/CVjXDRl_cWclSbas_w3w3JNkNF8dGxhO7intuVq44t1Kho6CTz-l9r0RIBv69de0IjKK",
+    "synopsis": "After the Rebels are brutally overpowered by the Empire, Luke begins Jedi training with Yoda.",
+    "cast": ["Mark Hamill", "Harrison Ford", "Carrie Fisher"],
+    "director": "Irvin Kershner"
+  },
+  {
+    "id": "m5",
+    "title": "Star Wars: Return of the Jedi",
+    "genre": ["Action", "Adventure", "Sci-Fi"],
+    "durationMins": 131,
+    "rating": "PG",
+    "posterUrl": "https://lumiere-a.akamaihd.net/v1/images/rotj-in-theaters-40th-celebration-onesheet_1e34d642.jpeg?region=0,0,729,1080",
+    "synopsis": "Luke Skywalker and his friends rescue Han Solo and lead a battle to defeat the Empire.",
+    "cast": ["Mark Hamill", "Harrison Ford", "Carrie Fisher"],
+    "director": "Richard Marquand"
+  }
+]
