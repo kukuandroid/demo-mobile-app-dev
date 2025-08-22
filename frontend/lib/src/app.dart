@@ -8,6 +8,7 @@ import 'features/movies/movie_list_screen.dart';
 import 'features/movies/movie_detail_screen.dart';
 import 'features/booking/booking_viewmodel.dart';
 import 'features/booking/booking_screen.dart';
+import 'features/booking/booking_selection_screen.dart';
 import 'features/fnb/fnb_viewmodel.dart';
 import 'features/fnb/fnb_screen.dart';
 import 'features/payment/payment_viewmodel.dart';
@@ -40,6 +41,7 @@ class CinemaApp extends StatelessWidget {
         routes: {
           MovieListScreen.routeName: (_) => const MovieListScreen(),
           MovieDetailScreen.routeName: (_) => const MovieDetailScreen(),
+          BookingSelectionScreen.routeName: (_) => const BookingSelectionScreen(),
           BookingScreen.routeName: (_) => const BookingScreen(),
           FnbScreen.routeName: (_) => const FnbScreen(),
           PaymentScreen.routeName: (_) => const PaymentScreen(),
