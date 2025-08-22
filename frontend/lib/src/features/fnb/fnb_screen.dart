@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'fnb_viewmodel.dart';
-import '../payment/payment_screen.dart';
+import '../booking/booking_summary_screen.dart';
 
 class FnbScreen extends StatelessWidget {
   static const routeName = '/fnb';
@@ -22,9 +22,12 @@ class FnbScreen extends StatelessWidget {
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  IconButton(icon: const Icon(Icons.remove), onPressed: () => vm.dec(i)),
+                  IconButton(
+                      icon: const Icon(Icons.remove),
+                      onPressed: () => vm.dec(i)),
                   Text('${i.qty}'),
-                  IconButton(icon: const Icon(Icons.add), onPressed: () => vm.inc(i)),
+                  IconButton(
+                      icon: const Icon(Icons.add), onPressed: () => vm.inc(i)),
                 ],
               ),
             ),
@@ -38,8 +41,9 @@ class FnbScreen extends StatelessWidget {
               Text('Total: \$${vm.total.toStringAsFixed(2)}'),
               const Spacer(),
               ElevatedButton(
-                onPressed: () => Navigator.pushNamed(context, PaymentScreen.routeName),
-                child: const Text('Proceed to Payment'),
+                onPressed: () =>
+                    Navigator.pushNamed(context, BookingSummaryScreen.routeName),
+                child: const Text('Continue'),
               )
             ],
           ),
