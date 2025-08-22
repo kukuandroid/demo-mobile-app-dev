@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'payment_viewmodel.dart';
+import 'payment_method_screen.dart';
 
 class PaymentScreen extends StatelessWidget {
   static const routeName = '/payment';
