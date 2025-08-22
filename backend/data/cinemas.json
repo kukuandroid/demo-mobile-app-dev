@@ -1,0 +1,30 @@
+[
+  {
+    "id": "c1",
+    "name": "GSC Pavilion KL",
+    "locationId": "loc1",
+    "address": "Level 7, Pavilion Kuala Lumpur, 168, Jalan Bukit Bintang",
+    "halls": ["h1", "h2"]
+  },
+  {
+    "id": "c2", 
+    "name": "TGV 1 Utama",
+    "locationId": "loc2",
+    "address": "Level 4, 1 Utama Shopping Centre, 1, Lebuh Bandar Utama",
+    "halls": ["h3", "h4"]
+  },
+  {
+    "id": "c3",
+    "name": "GSC IOI City Mall",
+    "locationId": "loc2", 
+    "address": "Level 2, IOI City Mall, Lebuh IRC, IOI Resort City",
+    "halls": ["h5", "h6"]
+  },
+  {
+    "id": "c4",
+    "name": "TGV Shah Alam",
+    "locationId": "loc3",
+    "address": "Level 2, Plaza Shah Alam, Persiaran Perbandaran",
+    "halls": ["h7", "h8"]
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "id": "loc1",
+    "name": "Kuala Lumpur",
+    "state": "Selangor",
+    "country": "Malaysia"
+  },
+  {
+    "id": "loc2",
+    "name": "Petaling Jaya",
+    "state": "Selangor",
+    "country": "Malaysia"
+  },
+  {
+    "id": "loc3",
+    "name": "Shah Alam",
+    "state": "Selangor",
+    "country": "Malaysia"
+  },
+  {
+    "id": "loc4",
+    "name": "Subang Jaya",
+    "state": "Selangor",
+    "country": "Malaysia"
+  }
+]

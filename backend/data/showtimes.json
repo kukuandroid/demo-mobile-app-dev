@@ -1,5 +1,12 @@
 [
-  { "id": "s1", "movieId": "m1", "hallId": "h1", "startTime": "2025-08-22T12:30:00Z", "price": 15.0 },
-  { "id": "s2", "movieId": "m1", "hallId": "h2", "startTime": "2025-08-22T15:00:00Z", "price": 18.0 },
-  { "id": "s3", "movieId": "m2", "hallId": "h1", "startTime": "2025-08-22T17:45:00Z", "price": 14.0 }
+  { "id": "s1", "movieId": "m1", "cinemaId": "c1", "hallId": "h1", "date": "2025-08-23", "startTime": "12:30", "price": 15.0 },
+  { "id": "s2", "movieId": "m1", "cinemaId": "c1", "hallId": "h2", "date": "2025-08-23", "startTime": "15:00", "price": 18.0 },
+  { "id": "s3", "movieId": "m1", "cinemaId": "c2", "hallId": "h3", "date": "2025-08-23", "startTime": "14:30", "price": 16.0 },
+  { "id": "s4", "movieId": "m1", "cinemaId": "c2", "hallId": "h4", "date": "2025-08-24", "startTime": "19:45", "price": 16.0 },
+  { "id": "s5", "movieId": "m2", "cinemaId": "c1", "hallId": "h1", "date": "2025-08-23", "startTime": "17:45", "price": 14.0 },
+  { "id": "s6", "movieId": "m2", "cinemaId": "c3", "hallId": "h5", "date": "2025-08-24", "startTime": "20:15", "price": 22.0 },
+  { "id": "s7", "movieId": "m3", "cinemaId": "c2", "hallId": "h3", "date": "2025-08-23", "startTime": "11:00", "price": 15.0 },
+  { "id": "s8", "movieId": "m3", "cinemaId": "c4", "hallId": "h7", "date": "2025-08-24", "startTime": "16:30", "price": 13.0 },
+  { "id": "s9", "movieId": "m4", "cinemaId": "c1", "hallId": "h2", "date": "2025-08-23", "startTime": "21:00", "price": 18.0 },
+  { "id": "s10", "movieId": "m5", "cinemaId": "c3", "hallId": "h6", "date": "2025-08-24", "startTime": "18:00", "price": 25.0 }
 ]
