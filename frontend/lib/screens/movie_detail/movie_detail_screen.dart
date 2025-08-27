@@ -4,6 +4,7 @@ import 'package:frontend/models/cast_member.dart';
 import '../../widgets/info_widgets.dart';
 import '../../widgets/rating_bar_widget.dart';
 import '../../widgets/review_card.dart';
+import '../../widgets/gradient_button.dart';
 
 class MovieDetails {
   final String synopsis;
@@ -356,18 +357,16 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
         child: Row(
           children: [
             Expanded(
-              child: ElevatedButton(
+              child: GradientButton(
+                text: 'Book Ticket',
                 onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.deepPurple,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                child: const Text(
-                  'Book Ticket',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                gradientColors: const [Color(0xFF6C63FF), Color(0xFF9C27B0)],
+                height: 56,
+                borderRadius: BorderRadius.circular(16),
+                icon: const Icon(
+                  Icons.confirmation_number_outlined,
+                  color: Colors.white,
+                  size: 20,
                 ),
               ),
             ),
