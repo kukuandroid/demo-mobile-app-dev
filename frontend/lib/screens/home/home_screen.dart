@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import '../../models/movie.dart';
 import '../../config/strings.dart';
+import '../movie_detail/movie_detail_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   // Movie data from config
   List<Movie> get movies => AppStrings.movies
-      .map((movie) => Movie(
-            title: movie['title']!,
-            imageUrl: movie['imageUrl']!,
-            year: movie['year']!,
-            rating: movie['rating']!,
-          ))
+      .map(
+        (movie) => Movie(
+          title: movie['title']!,
+          imageUrl: movie['imageUrl']!,
+          year: movie['year']!,
+          rating: movie['rating']!,
+        ),
+      )
       .toList();
 
   @override
@@ -109,14 +112,30 @@ class HomeScreen extends StatelessWidget {
                   itemCount: movies.length,
                   itemBuilder: (context, index) {
                     final movie = movies[index];
-                    return Card(
-                      elevation: 4,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MovieDetailScreen(
+                              movie: {
+                                'title': movie.title,
+                                'imageUrl': movie.imageUrl,
+                                'year': movie.year,
+                                'rating': movie.rating,
+                              },
+                            ),
+                          ),
+                        );
+                      },
+                      child: Card(
+                        elevation: 4,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
                           // Movie poster
                           ClipRRect(
                             borderRadius: const BorderRadius.vertical(
@@ -178,7 +197,8 @@ class HomeScreen extends StatelessWidget {
                               ],
                             ),
                           ),
-                        ],
+                          ],
+                        ),
                       ),
                     );
                   },
