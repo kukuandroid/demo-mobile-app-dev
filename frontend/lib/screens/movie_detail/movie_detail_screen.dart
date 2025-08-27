@@ -31,42 +31,10 @@ class MovieDetails {
   });
 
   // Factory method to create sample data
-  factory MovieDetails.sample() {
-    return MovieDetails(
-      synopsis:
-          'A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O., but his tragic past may doom the project and his team to disaster.',
-      cast: const [
-        CastMember(
-          name: 'Leonardo DiCaprio',
-          role: 'Cobb',
-          imageUrl: 'https://via.placeholder.com/60?text=LD',
-        ),
-        CastMember(
-          name: 'Joseph Gordon-Levitt',
-          role: 'Arthur',
-          imageUrl: 'https://via.placeholder.com/60?text=JL',
-        ),
-        CastMember(
-          name: 'Ellen Page',
-          role: 'Ariadne',
-          imageUrl: 'https://via.placeholder.com/60?text=EP',
-        ),
-        CastMember(
-          name: 'Tom Hardy',
-          role: 'Eames',
-          imageUrl: 'https://via.placeholder.com/60?text=TH',
-        ),
-      ],
-      directors: ['Christopher Nolan'],
-      writers: ['Christopher Nolan'],
-      runtime: '2h 28m',
-      genres: ['Action', 'Adventure', 'Sci-Fi'],
-    );
-  }
 }
 
 class MovieDetailScreen extends StatefulWidget {
-  final Map<String, String> movie;
+  final Map<String, dynamic> movie;
 
   MovieDetailScreen({super.key, required this.movie});
 
@@ -76,7 +44,6 @@ class MovieDetailScreen extends StatefulWidget {
 
 class _MovieDetailScreenState extends State<MovieDetailScreen>
     with SingleTickerProviderStateMixin {
-  final MovieDetails details = MovieDetails.sample();
   late TabController _tabController;
 
   @override
@@ -102,26 +69,43 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
     );
   }
 
-  Widget _buildInfoRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 4.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 80,
-            child: Text(
-              '$label:',
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.grey,
-              ),
+  Widget _buildInfoRow(String label, dynamic value) {
+    Widget valueWidget;
+    if (value is List<String>) {
+      valueWidget = Wrap(
+        spacing: 10,
+        runSpacing: 4,
+        children: value.map<Widget>((v) => _buildInfoChip(v)).toList(),
+      );
+    } else if (value is String) {
+      valueWidget = Text(
+        value,
+        style: const TextStyle(fontSize: 14, color: Colors.black87),
+      );
+    } else {
+      valueWidget = const SizedBox.shrink();
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ListTile(
+          contentPadding: EdgeInsets.zero,
+          dense: true,
+          title: Text(
+            label,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.grey,
+              fontSize: 14,
             ),
           ),
-          const SizedBox(width: 8),
-          Expanded(child: Text(value)),
-        ],
-      ),
+          subtitle: valueWidget,
+          horizontalTitleGap: 12,
+          minLeadingWidth: 0,
+        ),
+        const Divider(height: 1, thickness: 1),
+      ],
     );
   }
 
@@ -131,91 +115,17 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: 16),
-          _buildInfoRow('Director', details.directors.join(', ')),
+          _buildInfoRow('Full Synopsis', widget.movie['synopsis']!),
           const SizedBox(height: 8),
-          _buildInfoRow('Writers', details.writers.join(', ')),
+          _buildInfoRow('Casts', widget.movie['cast']!),
           const SizedBox(height: 8),
-          _buildInfoRow('Language', 'English'),
+          _buildInfoRow('Director', widget.movie['directors']!),
           const SizedBox(height: 8),
-          _buildInfoRow('Country', 'USA, UK'),
+          _buildInfoRow('Writers', widget.movie['writers']!),
           const SizedBox(height: 8),
-          _buildInfoRow('Budget', '\$160 million'),
-          const SizedBox(height: 8),
-          _buildInfoRow('Box Office', '\$836.8 million'),
-
           // Synopsis Section
-          const SizedBox(height: 24),
-          const Text(
-            'Synopsis',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            details.synopsis,
-            style: const TextStyle(
-              fontSize: 16,
-              color: Colors.black87,
-              height: 1.6,
-            ),
-          ),
-
           // Cast Section
           const SizedBox(height: 24),
-          const Text(
-            'Cast',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 12),
-          SizedBox(
-            height: 100,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: details.cast.length,
-              itemBuilder: (context, index) {
-                final member = details.cast[index];
-                return Container(
-                  width: 80,
-                  margin: const EdgeInsets.only(right: 16),
-                  child: Column(
-                    children: [
-                      Container(
-                        width: 60,
-                        height: 60,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                            image: NetworkImage(member.imageUrl),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      Text(
-                        member.name,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.center,
-                      ),
-                      Text(
-                        member.role,
-                        style: const TextStyle(
-                          fontSize: 10,
-                          color: Colors.grey,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ),
         ],
       ),
     );
@@ -455,12 +365,9 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
                               ),
                             ),
                             const SizedBox(height: 10),
-                            Wrap(
-                              spacing: 8,
-                              runSpacing: 4,
-                              children: details.genres
-                                  .map((genre) => _buildInfoChip(genre))
-                                  .toList(),
+                            _buildInfoRow(
+                              'Genres',
+                              widget.movie['genres']!.join(', '),
                             ),
                             const SizedBox(height: 10),
                             Row(
@@ -487,7 +394,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
                                 ),
                                 const SizedBox(width: 4),
                                 Text(
-                                  details.runtime,
+                                  widget.movie['runtime']!,
                                   style: const TextStyle(
                                     fontSize: 14,
                                     color: Colors.grey,
