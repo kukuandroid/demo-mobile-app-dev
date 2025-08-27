@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:get/get.dart';
 import 'package:frontend/models/cast_member.dart';
 import '../../widgets/info_widgets.dart';
 import '../../widgets/rating_bar_widget.dart';
@@ -177,7 +178,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
                   color: Colors.white,
                 ),
               ),
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => Get.back(),
             ),
             actions: [
               IconButton(

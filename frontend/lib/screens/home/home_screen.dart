@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../../models/movie.dart';
 import '../../config/strings.dart';
-import '../movie_detail/movie_detail_screen.dart';
+import '../../routes/app_routes.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -120,24 +121,20 @@ class HomeScreen extends StatelessWidget {
                     final movie = movies[index];
                     return GestureDetector(
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => MovieDetailScreen(
-                              movie: {
-                                'title': movie.title,
-                                'imageUrl': movie.imageUrl,
-                                'year': movie.year,
-                                'rating': movie.rating,
-                                'synopsis': movie.synopsis,
-                                'cast': movie.cast,
-                                'directors': movie.directors,
-                                'writers': movie.writers,
-                                'runtime': movie.runtime,
-                                'genres': movie.genres,
-                              },
-                            ),
-                          ),
+                        Get.toNamed(
+                          AppRoutes.movieDetail,
+                          arguments: {
+                            'title': movie.title,
+                            'imageUrl': movie.imageUrl,
+                            'year': movie.year,
+                            'rating': movie.rating,
+                            'synopsis': movie.synopsis,
+                            'cast': movie.cast,
+                            'directors': movie.directors,
+                            'writers': movie.writers,
+                            'runtime': movie.runtime,
+                            'genres': movie.genres,
+                          },
                         );
                       },
                       child: Card(
