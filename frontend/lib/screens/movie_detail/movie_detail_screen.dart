@@ -1,14 +1,127 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import '../../config/strings.dart';
+
+class CastMember {
+  final String name;
+  final String role;
+  final String imageUrl;
+
+  const CastMember({
+    required this.name,
+    required this.role,
+    required this.imageUrl,
+  });
+}
+
+class MovieDetails {
+  final String synopsis;
+  final List<CastMember> cast;
+  final List<String> directors;
+  final List<String> writers;
+  final String runtime;
+  final List<String> genres;
+
+  const MovieDetails({
+    required this.synopsis,
+    required this.cast,
+    required this.directors,
+    required this.writers,
+    required this.runtime,
+    required this.genres,
+  });
+
+  // Factory method to create sample data
+  factory MovieDetails.sample() {
+    return MovieDetails(
+      synopsis: 'A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O., but his tragic past may doom the project and his team to disaster.',
+      cast: const [
+        CastMember(
+          name: 'Leonardo DiCaprio',
+          role: 'Cobb',
+          imageUrl: 'https://via.placeholder.com/60?text=LD',
+        ),
+        CastMember(
+          name: 'Joseph Gordon-Levitt',
+          role: 'Arthur',
+          imageUrl: 'https://via.placeholder.com/60?text=JL',
+        ),
+        CastMember(
+          name: 'Ellen Page',
+          role: 'Ariadne',
+          imageUrl: 'https://via.placeholder.com/60?text=EP',
+        ),
+        CastMember(
+          name: 'Tom Hardy',
+          role: 'Eames',
+          imageUrl: 'https://via.placeholder.com/60?text=TH',
+        ),
+      ],
+      directors: ['Christopher Nolan'],
+      writers: ['Christopher Nolan'],
+      runtime: '2h 28m',
+      genres: ['Action', 'Adventure', 'Sci-Fi'],
+    );
+  }
+}
 
 class MovieDetailScreen extends StatelessWidget {
   final Map<String, String> movie;
+  final MovieDetails details = MovieDetails.sample();
 
-  const MovieDetailScreen({
+  MovieDetailScreen({
     super.key,
     required this.movie,
   });
+
+  Widget _buildInfoChip(String text) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Text(
+        text,
+        style: const TextStyle(fontSize: 12),
+      ),
+    );
+  }
+
+  Widget _buildSectionTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16.0),
+      child: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 80,
+            child: Text(
+              '$label:',
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.grey,
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(child: Text(value)),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +129,7 @@ class MovieDetailScreen extends StatelessWidget {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            expandedHeight: 300,
+            expandedHeight: 280,
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
               background: Stack(
@@ -31,8 +144,8 @@ class MovieDetailScreen extends StatelessWidget {
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
-                        colors: [Colors.transparent, Colors.black87],
-                        stops: [0.6, 1.0],
+                        colors: [Colors.black26, Colors.black87],
+                        stops: [0.3, 1.0],
                       ),
                     ),
                   ),
@@ -71,86 +184,93 @@ class MovieDetailScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Movie Title and Basic Info
+                  Text(
+                    movie['title']!,
+                    style: const TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      height: 1.2,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
                   Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              movie['title']!,
-                              style: const TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Row(
-                              children: [
-                                const Icon(Icons.star, color: Colors.amber, size: 20),
-                                const SizedBox(width: 4),
-                                Text(
-                                  '${movie['rating']} (IMDb)',
-                                  style: const TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
+                      _buildInfoChip(movie['year']!),
+                      const SizedBox(width: 8),
+                      _buildInfoChip(details.runtime),
+                      const Spacer(),
+                      const Icon(Icons.star, color: Colors.amber, size: 24),
+                      const SizedBox(width: 4),
+                      Text(
+                        movie['rating']!,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.deepPurple,
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        child: const Icon(
-                          Icons.play_arrow,
-                          color: Colors.white,
-                          size: 30,
+                      const Text(
+                        '/10',
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 14,
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 24),
-                  const Text(
-                    'Storyline',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O., but his tragic past may doom the project and his team to disaster.',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey,
-                      height: 1.5,
-                    ),
+                  const SizedBox(height: 16),
+                  Wrap(
+                    spacing: 8,
+                    children: details.genres.map((genre) => _buildInfoChip(genre)).toList(),
                   ),
                   const SizedBox(height: 24),
-                  const Text(
-                    'Cast',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
+                  
+                  // Play Button
                   SizedBox(
-                    height: 80,
-                    child: ListView(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.deepPurple,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      icon: const Icon(Icons.play_arrow, size: 24),
+                      label: const Text(
+                        'Play Trailer',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                  
+                  // Synopsis Section
+                  _buildSectionTitle('Synopsis'),
+                  Text(
+                    details.synopsis,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.black87,
+                      height: 1.6,
+                    ),
+                  ),
+                  
+                  // Cast Section
+                  _buildSectionTitle('Cast'),
+                  SizedBox(
+                    height: 100,
+                    child: ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      children: List.generate(
-                        5,
-                        (index) => Container(
+                      itemCount: details.cast.length,
+                      itemBuilder: (context, index) {
+                        final member = details.cast[index];
+                        return Container(
                           width: 80,
-                          margin: const EdgeInsets.only(right: 12),
+                          margin: const EdgeInsets.only(right: 16),
                           child: Column(
                             children: [
                               Container(
@@ -159,25 +279,45 @@ class MovieDetailScreen extends StatelessWidget {
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
                                   image: DecorationImage(
-                                    image: NetworkImage(
-                                        'https://via.placeholder.com/60?text=C${index + 1}'),
+                                    image: NetworkImage(member.imageUrl),
                                     fit: BoxFit.cover,
                                   ),
                                 ),
                               ),
-                              const SizedBox(height: 4),
+                              const SizedBox(height: 6),
                               Text(
-                                'Actor ${index + 1}',
-                                style: const TextStyle(fontSize: 12),
+                                member.name,
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.center,
+                              ),
+                              Text(
+                                member.role,
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  color: Colors.grey,
+                                ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ],
                           ),
-                        ),
-                      ),
+                        );
+                      },
                     ),
                   ),
+                  
+                  // Crew Section
+                  _buildSectionTitle('Crew'),
+                  _buildInfoRow('Director', details.directors.join(', ')),
+                  const SizedBox(height: 8),
+                  _buildInfoRow('Writers', details.writers.join(', ')),
+                  
+                  const SizedBox(height: 32),
                 ],
               ),
             ),
