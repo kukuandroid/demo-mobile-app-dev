@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class CastMember {
   final String name;
@@ -33,7 +32,8 @@ class MovieDetails {
   // Factory method to create sample data
   factory MovieDetails.sample() {
     return MovieDetails(
-      synopsis: 'A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O., but his tragic past may doom the project and his team to disaster.',
+      synopsis:
+          'A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O., but his tragic past may doom the project and his team to disaster.',
       cast: const [
         CastMember(
           name: 'Leonardo DiCaprio',
@@ -64,14 +64,31 @@ class MovieDetails {
   }
 }
 
-class MovieDetailScreen extends StatelessWidget {
+class MovieDetailScreen extends StatefulWidget {
   final Map<String, String> movie;
-  final MovieDetails details = MovieDetails.sample();
 
-  MovieDetailScreen({
-    super.key,
-    required this.movie,
-  });
+  MovieDetailScreen({super.key, required this.movie});
+
+  @override
+  State<MovieDetailScreen> createState() => _MovieDetailScreenState();
+}
+
+class _MovieDetailScreenState extends State<MovieDetailScreen>
+    with SingleTickerProviderStateMixin {
+  final MovieDetails details = MovieDetails.sample();
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   Widget _buildInfoChip(String text) {
     return Container(
@@ -80,23 +97,7 @@ class MovieDetailScreen extends StatelessWidget {
         color: Colors.grey[200],
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Text(
-        text,
-        style: const TextStyle(fontSize: 12),
-      ),
-    );
-  }
-
-  Widget _buildSectionTitle(String title) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16.0),
-      child: Text(
-        title,
-        style: const TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
+      child: Text(text, style: const TextStyle(fontSize: 12)),
     );
   }
 
@@ -123,6 +124,248 @@ class MovieDetailScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildMovieDetailsTab() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 16),
+          _buildInfoRow('Director', details.directors.join(', ')),
+          const SizedBox(height: 8),
+          _buildInfoRow('Writers', details.writers.join(', ')),
+          const SizedBox(height: 8),
+          _buildInfoRow('Language', 'English'),
+          const SizedBox(height: 8),
+          _buildInfoRow('Country', 'USA, UK'),
+          const SizedBox(height: 8),
+          _buildInfoRow('Budget', '\$160 million'),
+          const SizedBox(height: 8),
+          _buildInfoRow('Box Office', '\$836.8 million'),
+
+          // Synopsis Section
+          const SizedBox(height: 24),
+          const Text(
+            'Synopsis',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            details.synopsis,
+            style: const TextStyle(
+              fontSize: 16,
+              color: Colors.black87,
+              height: 1.6,
+            ),
+          ),
+
+          // Cast Section
+          const SizedBox(height: 24),
+          const Text(
+            'Cast',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 12),
+          SizedBox(
+            height: 100,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: details.cast.length,
+              itemBuilder: (context, index) {
+                final member = details.cast[index];
+                return Container(
+                  width: 80,
+                  margin: const EdgeInsets.only(right: 16),
+                  child: Column(
+                    children: [
+                      Container(
+                        width: 60,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                            image: NetworkImage(member.imageUrl),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        member.name,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
+                      ),
+                      Text(
+                        member.role,
+                        style: const TextStyle(
+                          fontSize: 10,
+                          color: Colors.grey,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRatingsReviewTab() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Column(
+                children: [
+                  Text(
+                    widget.movie['rating']!,
+                    style: const TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const Text('IMDb Rating'),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: List.generate(5, (index) {
+                      return Icon(
+                        index < 4 ? Icons.star : Icons.star_border,
+                        color: Colors.amber,
+                        size: 16,
+                      );
+                    }),
+                  ),
+                ],
+              ),
+              const SizedBox(width: 32),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildRatingBar('5 stars', 0.7),
+                    _buildRatingBar('4 stars', 0.2),
+                    _buildRatingBar('3 stars', 0.08),
+                    _buildRatingBar('2 stars', 0.02),
+                    _buildRatingBar('1 star', 0.0),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
+          const Text(
+            'User Reviews',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 12),
+          _buildReviewCard(
+            'Amazing cinematography!',
+            'The visual effects and storytelling are incredible. A masterpiece of modern cinema.',
+            'John D.',
+            5,
+          ),
+          const SizedBox(height: 12),
+          _buildReviewCard(
+            'Mind-bending plot',
+            'Complex but rewarding. You need to watch it multiple times to catch all the details.',
+            'Sarah M.',
+            4,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRatingBar(String label, double percentage) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 50,
+            child: Text(label, style: const TextStyle(fontSize: 12)),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: LinearProgressIndicator(
+              value: percentage,
+              backgroundColor: Colors.grey[300],
+              valueColor: const AlwaysStoppedAnimation<Color>(Colors.amber),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildReviewCard(
+    String title,
+    String review,
+    String author,
+    int rating,
+  ) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    title,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
+                Row(
+                  children: List.generate(5, (index) {
+                    return Icon(
+                      index < rating ? Icons.star : Icons.star_border,
+                      color: Colors.amber,
+                      size: 14,
+                    );
+                  }),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text(
+              review,
+              style: const TextStyle(fontSize: 12, color: Colors.black87),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              '- $author',
+              style: const TextStyle(
+                fontSize: 11,
+                color: Colors.grey,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -135,10 +378,7 @@ class MovieDetailScreen extends StatelessWidget {
               background: Stack(
                 fit: StackFit.expand,
                 children: [
-                  Image.network(
-                    movie['imageUrl']!,
-                    fit: BoxFit.cover,
-                  ),
+                  Image.network(widget.movie['imageUrl']!, fit: BoxFit.cover),
                   const DecoratedBox(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
@@ -159,7 +399,10 @@ class MovieDetailScreen extends StatelessWidget {
                   color: Colors.black45,
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
+                child: const Icon(
+                  Icons.arrow_back_ios_new,
+                  color: Colors.white,
+                ),
               ),
               onPressed: () => Navigator.pop(context),
             ),
@@ -186,7 +429,7 @@ class MovieDetailScreen extends StatelessWidget {
                 children: [
                   // Movie Title and Basic Info
                   Text(
-                    movie['title']!,
+                    widget.movie['title']!,
                     style: const TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
@@ -196,14 +439,14 @@ class MovieDetailScreen extends StatelessWidget {
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      _buildInfoChip(movie['year']!),
+                      _buildInfoChip(widget.movie['year']!),
                       const SizedBox(width: 8),
                       _buildInfoChip(details.runtime),
                       const Spacer(),
                       const Icon(Icons.star, color: Colors.amber, size: 24),
                       const SizedBox(width: 4),
                       Text(
-                        movie['rating']!,
+                        widget.movie['rating']!,
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -211,112 +454,42 @@ class MovieDetailScreen extends StatelessWidget {
                       ),
                       const Text(
                         '/10',
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 14,
-                        ),
+                        style: TextStyle(color: Colors.grey, fontSize: 14),
                       ),
                     ],
                   ),
                   const SizedBox(height: 16),
                   Wrap(
                     spacing: 8,
-                    children: details.genres.map((genre) => _buildInfoChip(genre)).toList(),
+                    children: details.genres
+                        .map((genre) => _buildInfoChip(genre))
+                        .toList(),
                   ),
-                  const SizedBox(height: 24),
-                  
-                  // Play Button
+                  // Tab Bar
+                  const SizedBox(height: 10),
+                  TabBar(
+                    controller: _tabController,
+                    labelColor: Colors.deepPurple,
+                    unselectedLabelColor: Colors.grey,
+                    indicatorColor: Colors.deepPurple,
+                    tabs: const [
+                      Tab(text: 'Movie Details'),
+                      Tab(text: 'Ratings & Review'),
+                    ],
+                  ),
+
+                  // Tab Bar View
                   SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton.icon(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.deepPurple,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      icon: const Icon(Icons.play_arrow, size: 24),
-                      label: const Text(
-                        'Play Trailer',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                    height: 500,
+                    child: TabBarView(
+                      controller: _tabController,
+                      children: [
+                        _buildMovieDetailsTab(),
+                        _buildRatingsReviewTab(),
+                      ],
                     ),
                   ),
-                  
-                  // Synopsis Section
-                  _buildSectionTitle('Synopsis'),
-                  Text(
-                    details.synopsis,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.black87,
-                      height: 1.6,
-                    ),
-                  ),
-                  
-                  // Cast Section
-                  _buildSectionTitle('Cast'),
-                  SizedBox(
-                    height: 100,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: details.cast.length,
-                      itemBuilder: (context, index) {
-                        final member = details.cast[index];
-                        return Container(
-                          width: 80,
-                          margin: const EdgeInsets.only(right: 16),
-                          child: Column(
-                            children: [
-                              Container(
-                                width: 60,
-                                height: 60,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  image: DecorationImage(
-                                    image: NetworkImage(member.imageUrl),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 6),
-                              Text(
-                                member.name,
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.center,
-                              ),
-                              Text(
-                                member.role,
-                                style: const TextStyle(
-                                  fontSize: 10,
-                                  color: Colors.grey,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                  
-                  // Crew Section
-                  _buildSectionTitle('Crew'),
-                  _buildInfoRow('Director', details.directors.join(', ')),
-                  const SizedBox(height: 8),
-                  _buildInfoRow('Writers', details.writers.join(', ')),
-                  
+
                   const SizedBox(height: 32),
                 ],
               ),
@@ -351,10 +524,7 @@ class MovieDetailScreen extends StatelessWidget {
                 ),
                 child: const Text(
                   'Book Ticket',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ),
             ),
