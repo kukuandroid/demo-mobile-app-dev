@@ -25,11 +25,11 @@ class SeatingKey extends StatelessWidget {
           decoration: BoxDecoration(
             color: color,
             borderRadius: BorderRadius.circular(4.0),
-            border: Border.all(color: Colors.white, width: 1.0),
+            border: Border.all(color: Colors.grey, width: 1.0),
           ),
         ),
         const SizedBox(width: 8.0),
-        Text(text, style: const TextStyle(color: Colors.white)),
+        Text(text, style: const TextStyle(color: Colors.black)),
       ],
     );
   }
