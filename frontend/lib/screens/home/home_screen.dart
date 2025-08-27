@@ -1,54 +1,19 @@
 import 'package:flutter/material.dart';
 import '../../models/movie.dart';
+import '../../config/strings.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
-  // Sample movie data
-  static const List<Movie> movies = [
-    Movie(
-      title: 'Inception',
-      imageUrl:
-          'https://upload.wikimedia.org/wikipedia/en/a/af/Batman_Begins_Poster.jpg',
-      year: '2010',
-      rating: '8.8',
-    ),
-    Movie(
-      title: 'The Dark Knight',
-      imageUrl:
-          'https://upload.wikimedia.org/wikipedia/en/a/af/Batman_Begins_Poster.jpg',
-      year: '2008',
-      rating: '9.0',
-    ),
-    Movie(
-      title: 'Interstellar',
-      imageUrl:
-          'https://upload.wikimedia.org/wikipedia/en/a/af/Batman_Begins_Poster.jpg',
-      year: '2014',
-      rating: '8.6',
-    ),
-    Movie(
-      title: 'The Shawshank Redemption',
-      imageUrl:
-          'https://upload.wikimedia.org/wikipedia/en/a/af/Batman_Begins_Poster.jpg',
-      year: '1994',
-      rating: '9.3',
-    ),
-    Movie(
-      title: 'Pulp Fiction',
-      imageUrl:
-          'https://upload.wikimedia.org/wikipedia/en/a/af/Batman_Begins_Poster.jpg',
-      year: '1994',
-      rating: '8.9',
-    ),
-    Movie(
-      title: 'The Godfather',
-      imageUrl:
-          'https://upload.wikimedia.org/wikipedia/en/a/af/Batman_Begins_Poster.jpg',
-      year: '1972',
-      rating: '9.2',
-    ),
-  ];
+  // Movie data from config
+  List<Movie> get movies => AppStrings.movies
+      .map((movie) => Movie(
+            title: movie['title']!,
+            imageUrl: movie['imageUrl']!,
+            year: movie['year']!,
+            rating: movie['rating']!,
+          ))
+      .toList();
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +34,7 @@ class HomeScreen extends StatelessWidget {
                         radius: 28,
                         backgroundColor: Colors.deepPurple.shade100,
                         backgroundImage: const NetworkImage(
-                          'https://cdn2.iconfinder.com/data/icons/avatars-60/5985/24-Maid-128.png',
+                          AppStrings.avatarUrl,
                         ),
                       ),
                       const SizedBox(width: 16),
@@ -77,7 +42,7 @@ class HomeScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Hello, Filhan',
+                            AppStrings.greeting,
                             style: Theme.of(context).textTheme.titleLarge
                                 ?.copyWith(
                                   fontWeight: FontWeight.w700,
@@ -86,7 +51,7 @@ class HomeScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            'Ready for a movie night?\nBook your ticket now!',
+                            AppStrings.greetingSubtitle,
                             style: Theme.of(context).textTheme.bodyMedium
                                 ?.copyWith(color: Colors.grey[700]),
                           ),
@@ -104,6 +69,34 @@ class HomeScreen extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 24),
+              // Search bar
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade100,
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.search, color: Colors.grey, size: 24),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: TextField(
+                        decoration: InputDecoration(
+                          hintText: AppStrings.searchHint,
+                          border: InputBorder.none,
+                          hintStyle: TextStyle(color: Colors.grey.shade500),
+                          contentPadding: const EdgeInsets.symmetric(
+                            vertical: 16,
+                          ),
+                        ),
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
               // Movie grid
               Expanded(
                 child: GridView.builder(
