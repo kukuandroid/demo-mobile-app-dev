@@ -1,3 +1,4 @@
+import 'package:frontend/screens/ticket_booking/ticket_booking_screen.dart';
 import 'package:get/get.dart';
 import '../screens/home/home_screen.dart';
 import '../screens/movie_detail/movie_detail_screen.dart';
@@ -5,17 +6,18 @@ import '../screens/movie_detail/movie_detail_screen.dart';
 class AppRoutes {
   static const String home = '/';
   static const String movieDetail = '/movie-detail';
+  static const String ticketBooking = '/ticket-booking';
 
   static List<GetPage> routes = [
-    GetPage(
-      name: home,
-      page: () => const HomeScreen(),
-    ),
+    GetPage(name: home, page: () => const HomeScreen()),
     GetPage(
       name: movieDetail,
-      page: () => MovieDetailScreen(
-        movie: Get.arguments as Map<String, dynamic>,
-      ),
+      page: () =>
+          MovieDetailScreen(movie: Get.arguments as Map<String, dynamic>),
+    ),
+    GetPage(
+      name: AppRoutes.ticketBooking,
+      page: () => const TicketBookingScreen(),
     ),
   ];
 }
