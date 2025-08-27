@@ -18,12 +18,25 @@ class _TicketBookingScreenState extends State<TicketBookingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF4F3BA6), Color(0xFF5433FF)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Get.back(),
         ),
-        title: const Text('Ticket Booking'),
+        title: const Text(
+          'Ticket Booking',
+          style: TextStyle(color: Colors.white),
+        ),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -37,7 +50,6 @@ class _TicketBookingScreenState extends State<TicketBookingScreen> {
                 style: TextStyle(fontSize: 16.0),
               ),
               const SizedBox(height: 16.0),
-              const SizedBox(height: 24.0),
               const Text(
                 'Location',
                 style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
