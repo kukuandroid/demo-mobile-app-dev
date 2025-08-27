@@ -427,70 +427,117 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Movie Title and Basic Info
-                  Text(
-                    widget.movie['title']!,
-                    style: const TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      height: 1.2,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
+                  // Movie Title, Thumbnail & Info Row
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildInfoChip(widget.movie['year']!),
-                      const SizedBox(width: 8),
-                      _buildInfoChip(details.runtime),
-                      const Spacer(),
-                      const Icon(Icons.star, color: Colors.amber, size: 24),
-                      const SizedBox(width: 4),
-                      Text(
-                        widget.movie['rating']!,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(14),
+                        child: Image.network(
+                          widget.movie['imageUrl']!,
+                          width: 110,
+                          height: 160,
+                          fit: BoxFit.cover,
                         ),
                       ),
-                      const Text(
-                        '/10',
-                        style: TextStyle(color: Colors.grey, fontSize: 14),
+                      const SizedBox(width: 20),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              widget.movie['title']!,
+                              style: const TextStyle(
+                                fontSize: 28,
+                                fontWeight: FontWeight.bold,
+                                height: 1.15,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Wrap(
+                              spacing: 8,
+                              runSpacing: 4,
+                              children: details.genres
+                                  .map((genre) => _buildInfoChip(genre))
+                                  .toList(),
+                            ),
+                            const SizedBox(height: 10),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.calendar_month,
+                                  size: 16,
+                                  color: Colors.grey[600],
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  '${widget.movie['year']}',
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Color.fromARGB(255, 73, 70, 70),
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Icon(
+                                  Icons.access_time,
+                                  size: 16,
+                                  color: Colors.grey[600],
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  details.runtime,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
-                  Wrap(
-                    spacing: 8,
-                    children: details.genres
-                        .map((genre) => _buildInfoChip(genre))
-                        .toList(),
-                  ),
-                  // Tab Bar
-                  const SizedBox(height: 10),
-                  TabBar(
-                    controller: _tabController,
-                    labelColor: Colors.deepPurple,
-                    unselectedLabelColor: Colors.grey,
-                    indicatorColor: Colors.deepPurple,
-                    tabs: const [
-                      Tab(text: 'Movie Details'),
-                      Tab(text: 'Ratings & Review'),
-                    ],
-                  ),
-
-                  // Tab Bar View
-                  SizedBox(
-                    height: 500,
-                    child: TabBarView(
-                      controller: _tabController,
+                  const SizedBox(height: 24),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey[100],
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: Column(
                       children: [
-                        _buildMovieDetailsTab(),
-                        _buildRatingsReviewTab(),
+                        TabBar(
+                          controller: _tabController,
+                          labelColor: Colors.deepPurple,
+                          unselectedLabelColor: Colors.grey,
+                          indicator: BoxDecoration(
+                            color: Colors.deepPurple.withOpacity(0.08),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          indicatorColor: Colors.deepPurple,
+                          tabs: const [
+                            Tab(text: 'Movie Details'),
+                            Tab(text: 'Ratings & Review'),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 480,
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: TabBarView(
+                              controller: _tabController,
+                              children: [
+                                _buildMovieDetailsTab(),
+                                _buildRatingsReviewTab(),
+                              ],
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
-
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 24),
                 ],
               ),
             ),
