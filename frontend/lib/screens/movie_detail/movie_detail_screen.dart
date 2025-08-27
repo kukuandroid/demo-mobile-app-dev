@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class CastMember {
   final String name;
@@ -494,6 +495,35 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
                                 ),
                               ],
                             ),
+                            const SizedBox(height: 10),
+                            Row(
+                              children: [
+                                RatingBarIndicator(
+                                  rating:
+                                      double.tryParse(
+                                        widget.movie['rating'] ?? '0',
+                                      ) ??
+                                      0,
+                                  itemBuilder: (context, index) => const Icon(
+                                    Icons.star_rounded,
+                                    color: Colors.amber,
+                                  ),
+                                  unratedColor: Colors.grey[300],
+                                  itemCount: 5,
+                                  itemSize: 20,
+                                  direction: Axis.horizontal,
+                                ),
+                                const SizedBox(width: 6),
+                                Text(
+                                  widget.movie['rating']!,
+                                  style: const TextStyle(
+                                    fontSize: 15,
+                                    color: Colors.black87,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ],
                         ),
                       ),
@@ -501,21 +531,19 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
                   ),
                   const SizedBox(height: 24),
                   Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey[100],
-                      borderRadius: BorderRadius.circular(14),
-                    ),
                     child: Column(
                       children: [
                         TabBar(
                           controller: _tabController,
                           labelColor: Colors.deepPurple,
                           unselectedLabelColor: Colors.grey,
-                          indicator: BoxDecoration(
-                            color: Colors.deepPurple.withOpacity(0.08),
-                            borderRadius: BorderRadius.circular(8),
+                          indicator: const UnderlineTabIndicator(
+                            borderSide: BorderSide(
+                              width: 3,
+                              color: Colors.deepPurple,
+                            ),
+                            insets: EdgeInsets.symmetric(horizontal: 16),
                           ),
-                          indicatorColor: Colors.deepPurple,
                           tabs: const [
                             Tab(text: 'Movie Details'),
                             Tab(text: 'Ratings & Review'),
