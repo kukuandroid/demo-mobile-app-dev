@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:frontend/routes/app_routes.dart';
 import 'package:get/get.dart';
 import 'package:frontend/models/cast_member.dart';
 import '../../widgets/info_widgets.dart';
@@ -360,7 +361,9 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
             Expanded(
               child: GradientButton(
                 text: 'Book Ticket',
-                onPressed: () {},
+                onPressed: () {
+                  Get.toNamed(AppRoutes.ticketBooking);
+                },
                 gradientColors: const [Color(0xFF6C63FF), Color(0xFF9C27B0)],
                 height: 56,
                 borderRadius: BorderRadius.circular(16),
