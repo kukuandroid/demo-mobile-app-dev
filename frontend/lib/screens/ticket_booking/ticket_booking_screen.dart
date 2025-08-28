@@ -32,12 +32,30 @@ class _TicketBookingScreenState extends State<TicketBookingScreen> {
     'H6': true,
     'J8': true,
   };
+  final List<int> vipRows = const [0, 1];
+  double _totalPrice = 0.0;
+  final double regularSeatPrice = 15.00;
+  final double vipSeatPrice = 25.00;
 
   void _onSeatsSelected(List<String> seats) {
     setState(() {
       selectedSeats.clear();
       selectedSeats.addAll(seats);
+      _calculateTotalPrice();
     });
+  }
+
+  void _calculateTotalPrice() {
+    double total = 0;
+    for (var seatId in selectedSeats) {
+      int row = seatId.codeUnitAt(0) - 65;
+      if (vipRows.contains(row)) {
+        total += vipSeatPrice;
+      } else {
+        total += regularSeatPrice;
+      }
+    }
+    _totalPrice = total;
   }
 
   @override
@@ -122,7 +140,7 @@ class _TicketBookingScreenState extends State<TicketBookingScreen> {
               child: CinemaSeatLayout(
                 rows: 10,
                 seatsPerRow: 10,
-                vipRows: const [0, 1],
+                vipRows: vipRows,
                 selectedSeats: selectedSeats,
                 onSeatsSelected: _onSeatsSelected,
                 unavailableSeats: unavailableSeats,
@@ -133,10 +151,82 @@ class _TicketBookingScreenState extends State<TicketBookingScreen> {
                 screenLabel: 'SCREEN',
               ),
             ),
+            const SizedBox(height: 24),
+            _buildBookingSummary(),
           ],
         ),
       ),
       bottomNavigationBar: _buildBottomButtons(),
+    );
+  }
+
+  Widget _buildBookingSummary() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildSectionHeader(Icons.chair_outlined, 'Your Selection'),
+        const SizedBox(height: 16),
+        Card(
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Seats (${selectedSeats.length})',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey.shade600,
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        selectedSeats.join(', '),
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.end,
+                        maxLines: 2,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                const Divider(),
+                const SizedBox(height: 12),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Subtotal',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      'RM ${_totalPrice.toStringAsFixed(2)}',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.deepPurple,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 
