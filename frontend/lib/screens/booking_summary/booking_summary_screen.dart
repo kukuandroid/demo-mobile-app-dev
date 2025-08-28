@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/routes/app_routes.dart';
+import 'package:frontend/widgets/custom_app_bar.dart';
 import 'package:get/get.dart';
 import '../../widgets/gradient_button.dart';
 
@@ -7,24 +9,36 @@ class BookingSummaryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final arguments = Get.arguments as Map<String, dynamic>;
-
-    final String movieTitle = arguments['title']!;
-    final String imageUrl = arguments['imageUrl']!;
-    final String cinema = arguments['cinema']!;
-    final String date = arguments['date']!;
-    final String time = arguments['time']!;
-    final List<String> selectedSeats = List<String>.from(
-      arguments['selectedSeats']!,
-    );
-    final double totalPrice = arguments['totalPrice']!;
+    // Using hardcoded data as requested
+    const String movieTitle = 'The Creator';
+    const String imageUrl =
+        'https://image.tmdb.org/t/p/w500/vBZ0qvaRxqEhZ5sRxG2q7Amd9Tu.jpg';
+    const String cinema = 'GSC, Mid Valley';
+    const String date = 'Aug 28, 2025';
+    const String time = '10:00 PM';
+    final List<String> selectedSeats = ['E5', 'E6'];
+    const double ticketPrice = 40.00;
+    const double convenienceFee = 2.00;
+    const double totalPrice = ticketPrice + convenienceFee;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Booking Summary'),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        foregroundColor: Colors.black,
+      appBar: CustomAppBar(
+        title: 'Booking Summary',
+        actions: [
+          TextButton(
+            onPressed: () {
+              // Handle skip action
+              Get.toNamed(AppRoutes.bookingSummary);
+            },
+            child: const Text(
+              'Skip',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -35,7 +49,7 @@ class BookingSummaryScreen extends StatelessWidget {
             const SizedBox(height: 24),
             _buildBookingDetailsCard(cinema, date, time, selectedSeats),
             const SizedBox(height: 24),
-            _buildPaymentSummaryCard(totalPrice),
+            _buildPaymentSummaryCard(ticketPrice, convenienceFee),
           ],
         ),
       ),
@@ -77,7 +91,7 @@ class BookingSummaryScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Fantasy, Sci-Fi', // Placeholder
+                    'Fantasy, Sci-Fi', // Hardcoded genre
                     style: TextStyle(color: Colors.grey[600], fontSize: 16),
                   ),
                 ],
@@ -104,13 +118,17 @@ class BookingSummaryScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildDetailRow(Icons.location_on, 'Cinema', cinema),
+            _buildDetailRow(Icons.location_on_outlined, 'Cinema', cinema),
             const Divider(height: 32),
-            _buildDetailRow(Icons.calendar_today, 'Date', date),
+            _buildDetailRow(Icons.calendar_today_outlined, 'Date', date),
             const Divider(height: 32),
-            _buildDetailRow(Icons.access_time, 'Time', time),
+            _buildDetailRow(Icons.access_time_outlined, 'Time', time),
             const Divider(height: 32),
-            _buildDetailRow(Icons.event_seat, 'Seats', seats.join(', ')),
+            _buildDetailRow(
+              Icons.event_seat_outlined,
+              'Seats',
+              seats.join(', '),
+            ),
           ],
         ),
       ),
@@ -120,7 +138,7 @@ class BookingSummaryScreen extends StatelessWidget {
   Widget _buildDetailRow(IconData icon, String label, String value) {
     return Row(
       children: [
-        Icon(icon, color: Colors.deepPurple, size: 20),
+        Icon(icon, color: Colors.deepPurple, size: 22),
         const SizedBox(width: 16),
         Text(label, style: TextStyle(fontSize: 16, color: Colors.grey[600])),
         const Spacer(),
@@ -128,15 +146,15 @@ class BookingSummaryScreen extends StatelessWidget {
           value,
           style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
           textAlign: TextAlign.right,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
         ),
       ],
     );
   }
 
-  Widget _buildPaymentSummaryCard(double totalPrice) {
-    const double convenienceFee = 5.00;
-    final double subtotal = totalPrice - convenienceFee;
-
+  Widget _buildPaymentSummaryCard(double ticketPrice, double convenienceFee) {
+    final double totalPrice = ticketPrice + convenienceFee;
     return Card(
       elevation: 4,
       shadowColor: Colors.grey.withOpacity(0.2),
@@ -153,7 +171,7 @@ class BookingSummaryScreen extends StatelessWidget {
             const SizedBox(height: 16),
             _buildPaymentRow(
               'Ticket Price',
-              'RM ${subtotal.toStringAsFixed(2)}',
+              'RM ${ticketPrice.toStringAsFixed(2)}',
             ),
             const SizedBox(height: 8),
             _buildPaymentRow(
@@ -201,12 +219,13 @@ class BookingSummaryScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).scaffoldBackgroundColor,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 10,
+            color: Colors.black.withOpacity(0.05),
+            spreadRadius: 0,
+            blurRadius: 20,
+            offset: const Offset(0, -5),
           ),
         ],
         borderRadius: const BorderRadius.only(
@@ -217,23 +236,25 @@ class BookingSummaryScreen extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Total Payable',
-                style: TextStyle(color: Colors.grey[600], fontSize: 14),
-              ),
-              Text(
-                'RM ${totalPrice.toStringAsFixed(2)}',
-                style: const TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.deepPurple,
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Total Payable',
+                  style: TextStyle(color: Colors.grey[600], fontSize: 14),
                 ),
-              ),
-            ],
+                Text(
+                  'RM ${totalPrice.toStringAsFixed(2)}',
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.deepPurple,
+                  ),
+                ),
+              ],
+            ),
           ),
           SizedBox(
             width: 180,
@@ -247,6 +268,8 @@ class BookingSummaryScreen extends StatelessWidget {
                   backgroundColor: Colors.green,
                   colorText: Colors.white,
                   margin: const EdgeInsets.all(16),
+                  borderRadius: 12,
+                  duration: const Duration(seconds: 3),
                 );
               },
             ),
