@@ -233,48 +233,20 @@ class BookingSummaryScreen extends StatelessWidget {
           topRight: Radius.circular(20),
         ),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Total Payable',
-                  style: TextStyle(color: Colors.grey[600], fontSize: 14),
-                ),
-                Text(
-                  'RM ${totalPrice.toStringAsFixed(2)}',
-                  style: const TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.deepPurple,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(
-            width: 180,
-            child: GradientButton(
-              text: 'Pay Now',
-              onPressed: () {
-                Get.snackbar(
-                  'Success',
-                  'Payment successful! Enjoy the movie.',
-                  snackPosition: SnackPosition.BOTTOM,
-                  backgroundColor: Colors.green,
-                  colorText: Colors.white,
-                  margin: const EdgeInsets.all(16),
-                  borderRadius: 12,
-                  duration: const Duration(seconds: 3),
-                );
-              },
-            ),
-          ),
-        ],
+      child: GradientButton(
+        text: 'Proceed to payment',
+        onPressed: () {
+          Get.snackbar(
+            'Success',
+            'Payment successful! Enjoy the movie.',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.green,
+            colorText: Colors.white,
+            margin: const EdgeInsets.all(16),
+            borderRadius: 12,
+            duration: const Duration(seconds: 3),
+          );
+        },
       ),
     );
   }
