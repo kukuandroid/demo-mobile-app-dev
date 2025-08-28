@@ -236,16 +236,7 @@ class BookingSummaryScreen extends StatelessWidget {
       child: GradientButton(
         text: 'Proceed to payment',
         onPressed: () {
-          Get.snackbar(
-            'Success',
-            'Payment successful! Enjoy the movie.',
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.green,
-            colorText: Colors.white,
-            margin: const EdgeInsets.all(16),
-            borderRadius: 12,
-            duration: const Duration(seconds: 3),
-          );
+          Get.toNamed(AppRoutes.paymentMethod);
         },
       ),
     );
