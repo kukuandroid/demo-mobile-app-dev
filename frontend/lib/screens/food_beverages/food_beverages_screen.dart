@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/config/strings.dart';
 import 'package:get/get.dart';
 import 'package:frontend/routes/app_routes.dart';
 import 'package:frontend/widgets/custom_app_bar.dart';
@@ -98,7 +99,7 @@ class _FoodBeveragesScreenState extends State<FoodBeveragesScreen> {
       length: 3,
       child: Scaffold(
         appBar: CustomAppBar(
-          title: 'Beverages & Food',
+          title: AppStrings.foodBeveragesTitle,
           actions: [
             TextButton(
               onPressed: () {
@@ -106,7 +107,7 @@ class _FoodBeveragesScreenState extends State<FoodBeveragesScreen> {
                 Get.toNamed(AppRoutes.bookingSummary);
               },
               child: const Text(
-                'Skip',
+                AppStrings.skipButton,
                 style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.w500,
@@ -142,8 +143,8 @@ class _FoodBeveragesScreenState extends State<FoodBeveragesScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      'Total',
+                    Text(
+                      AppStrings.totalPriceLabel,
                       style: TextStyle(fontSize: 14, color: Colors.grey),
                     ),
                     Text(
@@ -161,14 +162,11 @@ class _FoodBeveragesScreenState extends State<FoodBeveragesScreen> {
                 SizedBox(
                   width: double.infinity,
                   child: GradientButton(
-                    text: 'Confirm',
+                    text: AppStrings.confirmButton,
                     onPressed: () {
                       Get.toNamed(AppRoutes.bookingSummary);
                     },
-                    gradientColors: const [
-                      Color(0xFF6C63FF),
-                      Color(0xFF9C27B0),
-                    ],
+
                     height: 54,
                     borderRadius: BorderRadius.circular(12),
                     textStyle: const TextStyle(

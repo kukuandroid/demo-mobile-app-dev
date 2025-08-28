@@ -364,7 +364,6 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
                 onPressed: () {
                   Get.toNamed(AppRoutes.ticketBooking);
                 },
-                gradientColors: const [Color(0xFF6C63FF), Color(0xFF9C27B0)],
                 height: 56,
                 borderRadius: BorderRadius.circular(16),
                 icon: const Icon(

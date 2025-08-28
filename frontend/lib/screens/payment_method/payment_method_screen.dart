@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/config/strings.dart';
 import 'package:frontend/routes/app_routes.dart';
 import 'package:frontend/widgets/custom_app_bar.dart';
 import 'package:frontend/widgets/payment_option_card.dart';
@@ -15,14 +16,14 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Payment Method'),
+      appBar: const CustomAppBar(title: AppStrings.paymentMethodLabel),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'How would you like to make the payment?',
+              AppStrings.paymentMethod,
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: Colors.black87,
@@ -30,7 +31,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
             ),
             const SizedBox(height: 8),
             Text(
-              'Kindly select your preferred option',
+              AppStrings.paymentMethodSubtitle,
               style: Theme.of(
                 context,
               ).textTheme.titleMedium?.copyWith(color: Colors.grey[600]),
@@ -38,24 +39,24 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
             const SizedBox(height: 32.0),
             PaymentOptionCard(
               icon: Icons.credit_card_outlined,
-              title: 'Debit Card',
-              subtitle: 'Pay with your Visa or Mastercard',
+              title: AppStrings.debitCard,
+              subtitle: AppStrings.debitCardDescription,
               onTap: () {
                 Get.toNamed(AppRoutes.orderAcknowledgement);
               },
             ),
             PaymentOptionCard(
               icon: Icons.account_balance_wallet_outlined,
-              title: 'Bank Transfer',
-              subtitle: 'FPX, direct bank-in',
+              title: AppStrings.bankTransfer,
+              subtitle: AppStrings.bankTransferDescription,
               onTap: () {
                 Get.toNamed(AppRoutes.orderAcknowledgement);
               },
             ),
             PaymentOptionCard(
               icon: Icons.currency_bitcoin,
-              title: 'Crypto Wallets',
-              subtitle: 'Pay with Bitcoin, Ethereum, etc.',
+              title: AppStrings.cryptoWallets,
+              subtitle: AppStrings.cryptoWalletsDescription,
               onTap: () {
                 Get.toNamed(AppRoutes.orderAcknowledgement);
               },
@@ -65,5 +66,4 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
       ),
     );
   }
-
 }

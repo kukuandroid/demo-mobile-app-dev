@@ -134,8 +134,6 @@ class _TicketBookingScreenState extends State<TicketBookingScreen> {
           Expanded(
             child: GradientButton(
               text: 'Proceed',
-              gradientColors: const [Color(0xFF6C63FF), Color(0xFF9C27B0)],
-
               onPressed: () {
                 Get.toNamed(AppRoutes.foodBeverages);
               },

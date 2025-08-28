@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/config/strings.dart';
 import 'package:frontend/routes/app_routes.dart';
 import 'package:frontend/widgets/custom_app_bar.dart';
 import 'package:get/get.dart';
@@ -23,7 +24,7 @@ class BookingSummaryScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: CustomAppBar(
-        title: 'Booking Summary',
+        title: AppStrings.bookingSummaryLabel,
         actions: [
           TextButton(
             onPressed: () {
@@ -165,17 +166,17 @@ class BookingSummaryScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Payment Summary',
+              AppStrings.paymentSummaryLabel,
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             _buildPaymentRow(
-              'Ticket Price',
+              AppStrings.ticketPriceLabel,
               'RM ${ticketPrice.toStringAsFixed(2)}',
             ),
             const SizedBox(height: 8),
             _buildPaymentRow(
-              'Convenience Fee',
+              AppStrings.convenienceFeeLabel,
               'RM ${convenienceFee.toStringAsFixed(2)}',
             ),
             const Divider(height: 24, thickness: 1),
@@ -183,7 +184,7 @@ class BookingSummaryScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text(
-                  'Total Payable',
+                  AppStrings.totalPayableLabel,
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 Text(
@@ -234,7 +235,7 @@ class BookingSummaryScreen extends StatelessWidget {
         ),
       ),
       child: GradientButton(
-        text: 'Proceed to payment',
+        text: AppStrings.proceedToPaymentButton,
         onPressed: () {
           Get.toNamed(AppRoutes.paymentMethod);
         },
