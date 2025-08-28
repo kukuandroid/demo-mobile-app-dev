@@ -1,5 +1,6 @@
 import 'package:frontend/screens/booking_summary/booking_summary_screen.dart';
 import 'package:frontend/screens/food_beverages/food_beverages_screen.dart';
+import 'package:frontend/screens/order_acknowledment/order_acknowledgement_screen.dart';
 import 'package:frontend/screens/payment_method/payment_method_screen.dart';
 import 'package:frontend/screens/ticket_booking/ticket_booking_screen.dart';
 import 'package:get/get.dart';
@@ -13,6 +14,7 @@ class AppRoutes {
   static const String bookingSummary = '/booking-summary';
   static const String foodBeverages = '/food-beverages';
   static const String paymentMethod = '/payment-method';
+  static const String orderAcknowledgement = '/order-acknowledgement';
 
   static List<GetPage> routes = [
     GetPage(name: home, page: () => const HomeScreen()),
@@ -36,6 +38,10 @@ class AppRoutes {
     GetPage(
       name: AppRoutes.paymentMethod,
       page: () => const PaymentMethodScreen(),
+    ),
+    GetPage(
+      name: AppRoutes.orderAcknowledgement,
+      page: () => const OrderAcknowledgementScreen(),
     ),
   ];
 }
