@@ -1,4 +1,5 @@
 import 'package:frontend/screens/booking_summary/booking_summary_screen.dart';
+import 'package:frontend/screens/food_beverages/food_beverages_screen.dart';
 import 'package:frontend/screens/ticket_booking/ticket_booking_screen.dart';
 import 'package:get/get.dart';
 import '../screens/home/home_screen.dart';
@@ -9,6 +10,7 @@ class AppRoutes {
   static const String movieDetail = '/movie-detail';
   static const String ticketBooking = '/ticket-booking';
   static const String bookingSummary = '/booking-summary';
+  static const String foodBeverages = '/food-beverages';
 
   static List<GetPage> routes = [
     GetPage(name: home, page: () => const HomeScreen()),
@@ -24,6 +26,10 @@ class AppRoutes {
     GetPage(
       name: AppRoutes.bookingSummary,
       page: () => const BookingSummaryScreen(),
+    ),
+    GetPage(
+      name: AppRoutes.foodBeverages,
+      page: () => const FoodBeveragesScreen(),
     ),
   ];
 }
