@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/routes/app_routes.dart';
+import 'package:frontend/widgets/custom_app_bar.dart';
+import 'package:frontend/widgets/gradient_button.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
 import '../../widgets/price_card.dart';
 import '../../widgets/dropdown_field.dart';
@@ -42,28 +43,7 @@ class _TicketBookingScreenState extends State<TicketBookingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Color(0xFF4F3BA6), Color(0xFF5433FF)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
-        ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Get.back(),
-        ),
-        title: const Text(
-          'Ticket Booking',
-          style: TextStyle(color: Colors.white),
-        ),
-        centerTitle: true,
-      ),
+      appBar: const CustomAppBar(title: 'Ticket Booking'),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -127,83 +107,42 @@ class _TicketBookingScreenState extends State<TicketBookingScreen> {
                   screenLabel: 'SCREEN',
                 ),
               ),
-              const SizedBox(height: 16.0),
-
-              _buildBottomButtons(),
             ],
           ),
         ),
       ),
+      bottomNavigationBar: _buildBottomButtons(),
     );
   }
 
   Widget _buildBottomButtons() {
-    return Row(
-      children: <Widget>[
-        Expanded(
-          child: SizedBox(
-            height: 50,
-            child: ElevatedButton(
-              onPressed: () => Get.back(),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.grey[800],
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-              ),
-              child: const Text(
-                'Cancel',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+      decoration: BoxDecoration(
+        color: Theme.of(context).scaffoldBackgroundColor,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, -2),
           ),
-        ),
-        const SizedBox(width: 16.0),
-        Expanded(
-          child: SizedBox(
-            height: 50,
-            child: ElevatedButton(
+        ],
+      ),
+      child: Row(
+        children: <Widget>[
+          const SizedBox(width: 16.0),
+          Expanded(
+            child: GradientButton(
+              text: 'Proceed',
+              gradientColors: const [Color(0xFF6C63FF), Color(0xFF9C27B0)],
+
               onPressed: () {
-                final arguments = Get.arguments as Map<String, dynamic>? ?? {};
-                final String movieTitle = arguments['title'] ?? 'No Title';
-                final String imageUrl = arguments['imageUrl'] ?? '';
-
-                // TODO: Get actual values from the widgets
-                const String cinema = 'GSC Mid Valley';
-                final String date = DateFormat('MMM d, yyyy').format(DateTime.now());
-                const String time = '10:00 PM';
-                const double seatPrice = 25.0;
-                const double convenienceFee = 5.00;
-                final double totalPrice =
-                    (selectedSeats.length * seatPrice) + convenienceFee;
-
-                Get.toNamed(
-                  AppRoutes.bookingSummary,
-                  arguments: {
-                    'title': movieTitle,
-                    'imageUrl': imageUrl,
-                    'cinema': cinema,
-                    'date': date,
-                    'time': time,
-                    'selectedSeats': selectedSeats,
-                    'totalPrice': totalPrice,
-                  },
-                );
+                Get.toNamed(AppRoutes.foodBeverages);
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-              ),
-              child: const Text(
-                'Proceed',
-                style: TextStyle(color: Colors.black),
-              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
