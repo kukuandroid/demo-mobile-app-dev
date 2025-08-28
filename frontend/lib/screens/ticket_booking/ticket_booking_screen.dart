@@ -9,6 +9,7 @@ import '../../widgets/dropdown_field.dart';
 import '../../widgets/date_selector.dart';
 import '../../widgets/time_selector.dart';
 import '../../widgets/seating_key.dart';
+import '../../widgets/cinema_seat_layout.dart';
 
 class TicketBookingScreen extends StatefulWidget {
   const TicketBookingScreen({super.key});
@@ -105,6 +106,33 @@ class _TicketBookingScreenState extends State<TicketBookingScreen> {
             const SizedBox(height: 16),
             const SeatingKey(),
             const SizedBox(height: 16),
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade900,
+                borderRadius: BorderRadius.circular(16.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.3),
+                    blurRadius: 15,
+                    offset: const Offset(0, 5),
+                  ),
+                ],
+              ),
+              child: CinemaSeatLayout(
+                rows: 10,
+                seatsPerRow: 10,
+                vipRows: const [0, 1],
+                selectedSeats: selectedSeats,
+                onSeatsSelected: _onSeatsSelected,
+                unavailableSeats: unavailableSeats,
+                seatSize: 26.0,
+                seatSpacing: 6.0,
+                rowSpacing: 12.0,
+                screenHeight: 50.0,
+                screenLabel: 'SCREEN',
+              ),
+            ),
           ],
         ),
       ),
