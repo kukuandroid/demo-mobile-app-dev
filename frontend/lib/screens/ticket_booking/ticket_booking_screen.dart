@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/routes/app_routes.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -163,7 +164,31 @@ class _TicketBookingScreenState extends State<TicketBookingScreen> {
             height: 50,
             child: ElevatedButton(
               onPressed: () {
-                // TODO: Implement booking confirmation
+                final arguments = Get.arguments as Map<String, dynamic>? ?? {};
+                final String movieTitle = arguments['title'] ?? 'No Title';
+                final String imageUrl = arguments['imageUrl'] ?? '';
+
+                // TODO: Get actual values from the widgets
+                const String cinema = 'GSC Mid Valley';
+                final String date = DateFormat('MMM d, yyyy').format(DateTime.now());
+                const String time = '10:00 PM';
+                const double seatPrice = 25.0;
+                const double convenienceFee = 5.00;
+                final double totalPrice =
+                    (selectedSeats.length * seatPrice) + convenienceFee;
+
+                Get.toNamed(
+                  AppRoutes.bookingSummary,
+                  arguments: {
+                    'title': movieTitle,
+                    'imageUrl': imageUrl,
+                    'cinema': cinema,
+                    'date': date,
+                    'time': time,
+                    'selectedSeats': selectedSeats,
+                    'totalPrice': totalPrice,
+                  },
+                );
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
