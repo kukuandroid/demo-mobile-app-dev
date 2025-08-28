@@ -1,14 +1,45 @@
 class AppStrings {
+  // Page title
   // Home Screen
   static const String appTitle = 'Movie App';
+  static const String foodBeveragesTitle = 'Beverages & Food';
+  static const String bookingSummaryLabel = 'Booking Summary';
+  static const String paymentMethodLabel = 'Payment Method';
 
   // Greeting Section
   static const String greeting = 'Hello, Filhan';
   static const String greetingSubtitle =
       'Ready for a movie night?\nBook your ticket now!';
 
+  // Label
+  static const String totalPriceLabel = 'Total';
+  static const String ticketPriceLabel = 'Ticket Price';
+  static const String convenienceFeeLabel = 'Convenience Fee';
+  static const String totalPayableLabel = 'Total Payable';
+  static const String paymentSummaryLabel = 'Payment Summary';
+  static const String paymentMethod = 'How would you like to make the payment?';
+  static const String paymentMethodSubtitle =
+      'Kindly select your preferred option';
+
+  // Button action
+  static const String skipButton = 'Skip';
+  static const String proceedButton = 'Proceed';
+  static const String confirmButton = 'Confirm';
+  static const String proceedToPaymentButton = 'Proceed to payment';
+
   // Search Bar
   static const String searchHint = 'Search by movies or cinema hall';
+
+  // Payment method
+  static const String bankTransfer = 'Bank Transfer';
+  static const String cryptoWallets = 'Crypto Wallets';
+  static const String debitCard = 'Debit Card';
+
+  // Payment method description
+  static const String bankTransferDescription = 'FPX, direct bank-in';
+  static const String cryptoWalletsDescription =
+      'Pay with Bitcoin, Ethereum, etc.';
+  static const String debitCardDescription = 'Pay with your Visa or Mastercard';
 
   // Movie Data
   static const List<Map<String, dynamic>> movies = [
