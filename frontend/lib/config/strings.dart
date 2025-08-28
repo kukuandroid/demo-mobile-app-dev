@@ -20,12 +20,17 @@ class AppStrings {
   static const String paymentMethod = 'How would you like to make the payment?';
   static const String paymentMethodSubtitle =
       'Kindly select your preferred option';
+  static const String congratulationsLabel = 'Congratulations!';
+  static const String orderAcknowledgementLabel =
+      'Your ticket purchase is successful, a confirmation has been sent to your e-mail';
 
   // Button action
   static const String skipButton = 'Skip';
   static const String proceedButton = 'Proceed';
   static const String confirmButton = 'Confirm';
   static const String proceedToPaymentButton = 'Proceed to payment';
+  static const String mainMenuButton = 'Main Menu';
+  static const String viewTicketButton = 'View ticket';
 
   // Search Bar
   static const String searchHint = 'Search by movies or cinema hall';
