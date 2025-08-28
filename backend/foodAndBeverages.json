@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "name": "Popcorn",
+    "type": "Food",
+    "price": 5.99
+  },
+  {
+    "id": 2,
+    "name": "Soda",
+    "type": "Beverage",
+    "price": 3.99
+  },
+  {
+    "id": 3,
+    "name": "Nachos",
+    "type": "Food",
+    "price": 7.99
+  },
+  {
+    "id": 4,
+    "name": "Water",
+    "type": "Beverage",
+    "price": 2.99
+  }
+]
