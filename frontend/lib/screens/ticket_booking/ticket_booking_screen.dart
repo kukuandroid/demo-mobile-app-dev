@@ -3,6 +3,7 @@ import 'package:frontend/routes/app_routes.dart';
 import 'package:frontend/widgets/custom_app_bar.dart';
 import 'package:frontend/widgets/gradient_button.dart';
 import 'package:get/get.dart';
+import '../../services/cinema_service.dart';
 
 import '../../widgets/price_card.dart';
 import '../../widgets/dropdown_field.dart';
@@ -36,6 +37,61 @@ class _TicketBookingScreenState extends State<TicketBookingScreen> {
   double _totalPrice = 0.0;
   final double regularSeatPrice = 15.00;
   final double vipSeatPrice = 25.00;
+
+  String? selectedLocation;
+  String? selectedCinema;
+
+  List<Map<String, dynamic>> cinemaLocations = [];
+  List<Map<String, dynamic>> cinemaHalls = [];
+  bool isLoadingCinemas = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCinemaLocations();
+  }
+
+  Future<void> _loadCinemaLocations() async {
+    try {
+      final cinemas = await CinemaService.getAllCinemas();
+
+      setState(() {
+        cinemaLocations = List<Map<String, dynamic>>.from(cinemas);
+        isLoadingCinemas = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoadingCinemas = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to load cinema locations: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  void _onLocationSelected(String? location) {
+    setState(() {
+      selectedLocation = location;
+      selectedCinema = null;
+
+      if (location != null) {
+        cinemaHalls = cinemaLocations
+            .where((cinema) => cinema['city'] == location)
+            .map(
+              (cinema) => {
+                'name': cinema['name'],
+                'mall': cinema['mall_or_area'],
+              },
+            )
+            .toList();
+      } else {
+        cinemaHalls = [];
+      }
+    });
+  }
 
   void _onSeatsSelected(List<String> seats) {
     setState(() {
@@ -82,9 +138,34 @@ class _TicketBookingScreenState extends State<TicketBookingScreen> {
                   children: [
                     _buildSectionHeader(Icons.location_on_outlined, 'Location'),
                     const SizedBox(height: 16),
-                    const DropdownField(hint: 'Select Location'),
+                    isLoadingCinemas
+                        ? const Center(
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : DropdownField(
+                            hint: 'Select Location',
+                            items: cinemaLocations
+                                .map<String>(
+                                  (location) => location['city'] as String,
+                                )
+                                .toSet()
+                                .toList(),
+                            value: selectedLocation,
+                            onChanged: _onLocationSelected,
+                          ),
                     const SizedBox(height: 16),
-                    const DropdownField(hint: 'Select Cinema Hall'),
+                    DropdownField(
+                      hint: 'Select Cinema Hall',
+                      items: cinemaHalls
+                          .map<String>((hall) => hall['name'] as String)
+                          .toList(),
+                      value: selectedCinema,
+                      onChanged: (value) {
+                        setState(() {
+                          selectedCinema = value;
+                        });
+                      },
+                    ),
                   ],
                 ),
               ),

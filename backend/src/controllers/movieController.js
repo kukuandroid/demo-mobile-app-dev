@@ -1,4 +1,4 @@
-const movies = require('../../movies.json');
+const movies = require('../../data/movies.json');
 const logger = require('../config/logger');
 
 const getMovies = (req, res, next) => {

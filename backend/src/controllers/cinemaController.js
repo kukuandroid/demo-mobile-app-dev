@@ -1,6 +1,6 @@
 const fs = require('fs').promises;
 const path = require('path');
-const cinemas = require('../../cinema_location.json');
+const cinemas = require('../../data/cinema_location.json');
 
 const getAllCinemas = async (req, res) => {
   try {

@@ -1,4 +1,4 @@
-const foodAndBeverages = require('../../foodAndBeverages.json');
+const foodAndBeverages = require('../../data/foodAndBeverages.json');
 const logger = require('../config/logger');
 
 const getFoodAndBeverages = (req, res, next) => {
