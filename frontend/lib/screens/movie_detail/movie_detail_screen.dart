@@ -2,34 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:frontend/routes/app_routes.dart';
 import 'package:get/get.dart';
-import 'package:frontend/models/cast_member.dart';
+import 'package:frontend/models/movie.dart';
 import '../../widgets/info_widgets.dart';
 import '../../widgets/rating_bar_widget.dart';
 import '../../widgets/review_card.dart';
 import '../../widgets/gradient_button.dart';
 
-class MovieDetails {
-  final String synopsis;
-  final List<CastMember> cast;
-  final List<String> directors;
-  final List<String> writers;
-  final String runtime;
-  final List<String> genres;
-
-  const MovieDetails({
-    required this.synopsis,
-    required this.cast,
-    required this.directors,
-    required this.writers,
-    required this.runtime,
-    required this.genres,
-  });
-}
-
 class MovieDetailScreen extends StatefulWidget {
-  final Map<String, dynamic> movie;
+  final Movie movie;
 
-  MovieDetailScreen({super.key, required this.movie});
+  const MovieDetailScreen({super.key, required this.movie});
 
   @override
   State<MovieDetailScreen> createState() => _MovieDetailScreenState();
@@ -56,13 +38,13 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          InfoRow(label: 'Full Synopsis', value: widget.movie['synopsis']!),
+          InfoRow(label: 'Full Synopsis', value: widget.movie.synopsis!),
           const SizedBox(height: 8),
-          InfoRow(label: 'Casts', value: widget.movie['cast']!),
+          InfoRow(label: 'Casts', value: widget.movie.cast!),
           const SizedBox(height: 8),
-          InfoRow(label: 'Director', value: widget.movie['directors']!),
+          InfoRow(label: 'Director', value: widget.movie.directors!),
           const SizedBox(height: 8),
-          InfoRow(label: 'Writers', value: widget.movie['writers']!),
+          InfoRow(label: 'Writers', value: widget.movie.writers!),
           const SizedBox(height: 8),
         ],
       ),
@@ -81,10 +63,11 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
               Column(
                 children: [
                   Text(
-                    widget.movie['rating']!,
+                    widget.movie.title,
                     style: const TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
+                      color: Colors.white,
                     ),
                   ),
                   const Text('IMDb Rating'),
@@ -141,6 +124,61 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
     );
   }
 
+  Widget _buildMovieHeader() {
+    return Stack(
+      children: [
+        // Backdrop image
+        Container(
+          height: 250,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: NetworkImage(
+                widget.movie.imageUrl,
+              ), // Using imageUrl as backdrop
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        // Gradient overlay
+        Container(
+          height: 250,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Colors.black26, Colors.black87],
+              stops: [0.3, 1.0],
+            ),
+          ),
+        ),
+        // Movie title and info
+        Positioned(
+          top: 16,
+          left: 16,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                widget.movie.title,
+                style: const TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                '${widget.movie.year} • ${widget.movie.rating}',
+                style: const TextStyle(fontSize: 16, color: Colors.white70),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -149,24 +187,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
           SliverAppBar(
             expandedHeight: 280,
             pinned: true,
-            flexibleSpace: FlexibleSpaceBar(
-              background: Stack(
-                fit: StackFit.expand,
-                children: [
-                  Image.network(widget.movie['imageUrl']!, fit: BoxFit.cover),
-                  const DecoratedBox(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [Colors.black26, Colors.black87],
-                        stops: [0.3, 1.0],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            flexibleSpace: FlexibleSpaceBar(background: _buildMovieHeader()),
             leading: IconButton(
               icon: Container(
                 padding: const EdgeInsets.all(8),
@@ -209,7 +230,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
                       ClipRRect(
                         borderRadius: BorderRadius.circular(14),
                         child: Image.network(
-                          widget.movie['imageUrl']!,
+                          widget.movie.imageUrl,
                           width: 110,
                           height: 160,
                           fit: BoxFit.cover,
@@ -221,7 +242,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              widget.movie['title']!,
+                              widget.movie.title,
                               style: const TextStyle(
                                 fontSize: 28,
                                 fontWeight: FontWeight.bold,
@@ -231,7 +252,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
                             const SizedBox(height: 10),
                             InfoRow(
                               label: 'Genres',
-                              value: widget.movie['genres']!.join(', '),
+                              value: widget.movie.genres.join(', '),
                             ),
                             const SizedBox(height: 10),
                             Row(
@@ -243,7 +264,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
                                 ),
                                 const SizedBox(width: 4),
                                 Text(
-                                  '${widget.movie['year']}',
+                                  '${widget.movie.year}',
                                   style: const TextStyle(
                                     fontSize: 14,
                                     color: Color.fromARGB(255, 73, 70, 70),
@@ -258,7 +279,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
                                 ),
                                 const SizedBox(width: 4),
                                 Text(
-                                  widget.movie['runtime']!,
+                                  widget.movie.runtime,
                                   style: const TextStyle(
                                     fontSize: 14,
                                     color: Colors.grey,
@@ -272,7 +293,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
                                 RatingBarIndicator(
                                   rating:
                                       double.tryParse(
-                                        widget.movie['rating'] ?? '0',
+                                        widget.movie.rating ?? '0',
                                       ) ??
                                       0,
                                   itemBuilder: (context, index) => const Icon(
@@ -286,7 +307,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
                                 ),
                                 const SizedBox(width: 6),
                                 Text(
-                                  widget.movie['rating']!,
+                                  widget.movie.rating!,
                                   style: const TextStyle(
                                     fontSize: 15,
                                     color: Colors.black87,
