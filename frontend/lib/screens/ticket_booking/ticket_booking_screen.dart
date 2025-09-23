@@ -230,6 +230,8 @@ class _TicketBookingScreenState extends State<TicketBookingScreen> {
                 rowSpacing: 12.0,
                 screenHeight: 50.0,
                 screenLabel: 'SCREEN',
+                regularSeatPrice: regularSeatPrice,
+                vipSeatPrice: vipSeatPrice,
               ),
             ),
             const SizedBox(height: 24),
@@ -256,53 +258,59 @@ class _TicketBookingScreenState extends State<TicketBookingScreen> {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Seats (${selectedSeats.length})',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey.shade600,
-                      ),
-                    ),
-                    Expanded(
-                      child: Text(
-                        selectedSeats.join(', '),
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Seats (${selectedSeats.length})',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey.shade600,
+                          ),
                         ),
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.end,
-                        maxLines: 2,
-                      ),
+                        Text(
+                          'RM ${_totalPrice.toStringAsFixed(2)}',
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.deepPurple,
+                          ),
+                        ),
+                      ],
                     ),
+                    if (selectedSeats.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8),
+                        child: Wrap(
+                          spacing: 8,
+                          runSpacing: 4,
+                          children: selectedSeats.map((seat) => Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: Colors.deepPurple.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(6),
+                              border: Border.all(color: Colors.deepPurple.withOpacity(0.3)),
+                            ),
+                            child: Text(
+                              seat,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.deepPurple,
+                              ),
+                            ),
+                          )).toList(),
+                        ),
+                      ),
                   ],
                 ),
                 const SizedBox(height: 12),
                 const Divider(),
                 const SizedBox(height: 12),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Subtotal',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      'RM ${_totalPrice.toStringAsFixed(2)}',
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.deepPurple,
-                      ),
-                    ),
-                  ],
-                ),
+                SizedBox.shrink(),
               ],
             ),
           ),
