@@ -148,7 +148,7 @@ class _FoodBeveragesScreenState extends State<FoodBeveragesScreen> {
                       style: TextStyle(fontSize: 14, color: Colors.grey),
                     ),
                     Text(
-                      '\${getTotalPrice().toStringAsFixed(2)}',
+                      'RM ${getTotalPrice()}',
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
