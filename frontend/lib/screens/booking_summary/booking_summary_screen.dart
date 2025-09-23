@@ -4,23 +4,37 @@ import 'package:frontend/routes/app_routes.dart';
 import 'package:frontend/widgets/custom_app_bar.dart';
 import 'package:get/get.dart';
 import '../../widgets/gradient_button.dart';
+import '../../models/food_item.dart';
 
 class BookingSummaryScreen extends StatelessWidget {
-  const BookingSummaryScreen({super.key});
+  final String movieTitle;
+  final String imageUrl;
+  final String cinema;
+  final String date;
+  final String time;
+  final List<String> selectedSeats;
+  final double ticketPrice;
+  final List<FoodItem>? selectedFoodItems;
+  final double? foodTotal;
+
+  const BookingSummaryScreen({
+    super.key,
+    required this.movieTitle,
+    required this.imageUrl,
+    required this.cinema,
+    required this.date,
+    required this.time,
+    required this.selectedSeats,
+    required this.ticketPrice,
+    this.selectedFoodItems,
+    this.foodTotal,
+  });
 
   @override
   Widget build(BuildContext context) {
-    // Using hardcoded data as requested
-    const String movieTitle = 'The Creator';
-    const String imageUrl =
-        'https://image.tmdb.org/t/p/w500/vBZ0qvaRxqEhZ5sRxG2q7Amd9Tu.jpg';
-    const String cinema = 'GSC, Mid Valley';
-    const String date = 'Aug 28, 2025';
-    const String time = '10:00 PM';
-    final List<String> selectedSeats = ['E5', 'E6'];
-    const double ticketPrice = 40.00;
     const double convenienceFee = 2.00;
-    const double totalPrice = ticketPrice + convenienceFee;
+    final double foodTotal = this.foodTotal ?? 0.0;
+    final double totalPrice = ticketPrice + convenienceFee + foodTotal;
 
     return Scaffold(
       appBar: CustomAppBar(
@@ -46,11 +60,15 @@ class BookingSummaryScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildMovieDetailCard(movieTitle, imageUrl),
+            _buildMovieDetailCard(),
             const SizedBox(height: 24),
-            _buildBookingDetailsCard(cinema, date, time, selectedSeats),
+            _buildBookingDetailsCard(),
             const SizedBox(height: 24),
-            _buildPaymentSummaryCard(ticketPrice, convenienceFee),
+            if (selectedFoodItems != null && selectedFoodItems!.isNotEmpty)
+              _buildFoodItemsCard(selectedFoodItems!, foodTotal),
+            if (selectedFoodItems != null && selectedFoodItems!.isNotEmpty)
+              const SizedBox(height: 24),
+            _buildPaymentSummaryCard(convenienceFee, foodTotal),
           ],
         ),
       ),
@@ -58,10 +76,10 @@ class BookingSummaryScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildMovieDetailCard(String title, String imageUrl) {
+  Widget _buildMovieDetailCard() {
     return Card(
       elevation: 4,
-      shadowColor: Colors.grey.withOpacity(0.2),
+      shadowColor: Colors.grey.withValues(alpha: 0.2),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -84,7 +102,7 @@ class BookingSummaryScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    title,
+                    movieTitle,
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20,
@@ -104,15 +122,10 @@ class BookingSummaryScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBookingDetailsCard(
-    String cinema,
-    String date,
-    String time,
-    List<String> seats,
-  ) {
+  Widget _buildBookingDetailsCard() {
     return Card(
       elevation: 4,
-      shadowColor: Colors.grey.withOpacity(0.2),
+      shadowColor: Colors.grey.withValues(alpha: 0.2),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -128,7 +141,7 @@ class BookingSummaryScreen extends StatelessWidget {
             _buildDetailRow(
               Icons.event_seat_outlined,
               'Seats',
-              seats.join(', '),
+              selectedSeats.join(', '),
             ),
           ],
         ),
@@ -154,11 +167,70 @@ class BookingSummaryScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildPaymentSummaryCard(double ticketPrice, double convenienceFee) {
-    final double totalPrice = ticketPrice + convenienceFee;
+  Widget _buildFoodItemsCard(List<FoodItem> foodItems, double foodTotal) {
     return Card(
       elevation: 4,
-      shadowColor: Colors.grey.withOpacity(0.2),
+      shadowColor: Colors.grey.withValues(alpha: 0.2),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Food & Beverages',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 16),
+            ...foodItems.where((item) => item.quantity > 0).map((item) {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        '${item.name} x${item.quantity}',
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                    ),
+                    Text(
+                      'RM ${(item.price * item.quantity).toStringAsFixed(2)}',
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                    ),
+                  ],
+                ),
+              );
+            }).toList(),
+            const Divider(height: 24, thickness: 1),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Food & Beverages Total',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  'RM ${foodTotal.toStringAsFixed(2)}',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.deepPurple,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPaymentSummaryCard(double convenienceFee, double foodTotal) {
+    final double totalPrice = ticketPrice + convenienceFee + foodTotal;
+    return Card(
+      elevation: 4,
+      shadowColor: Colors.grey.withValues(alpha: 0.2),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -175,6 +247,13 @@ class BookingSummaryScreen extends StatelessWidget {
               'RM ${ticketPrice.toStringAsFixed(2)}',
             ),
             const SizedBox(height: 8),
+            if (foodTotal > 0)
+              _buildPaymentRow(
+                'Food & Beverages',
+                'RM ${foodTotal.toStringAsFixed(2)}',
+              ),
+            if (foodTotal > 0)
+              const SizedBox(height: 8),
             _buildPaymentRow(
               AppStrings.convenienceFeeLabel,
               'RM ${convenienceFee.toStringAsFixed(2)}',
