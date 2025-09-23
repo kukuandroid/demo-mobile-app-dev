@@ -4,6 +4,7 @@ import 'package:frontend/screens/order_acknowledment/order_acknowledgement_scree
 import 'package:frontend/screens/payment_method/payment_method_screen.dart';
 import 'package:frontend/screens/ticket_booking/ticket_booking_screen.dart';
 import 'package:get/get.dart';
+import '../models/movie.dart';
 import '../screens/home/home_screen.dart';
 import '../screens/movie_detail/movie_detail_screen.dart';
 
@@ -20,8 +21,7 @@ class AppRoutes {
     GetPage(name: home, page: () => const HomeScreen()),
     GetPage(
       name: movieDetail,
-      page: () =>
-          MovieDetailScreen(movie: Get.arguments as Map<String, dynamic>),
+      page: () => MovieDetailScreen(movie: Get.arguments as Movie),
     ),
     GetPage(
       name: AppRoutes.ticketBooking,
