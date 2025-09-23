@@ -12,6 +12,7 @@ const getMovies = (req, res, next) => {
       }
     });
   } catch (error) {
+    console.log("🚀 ~ getMovies ~ error:", error)
     next(error);
   }
 };
