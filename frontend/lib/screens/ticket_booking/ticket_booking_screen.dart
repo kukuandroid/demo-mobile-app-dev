@@ -4,6 +4,7 @@ import 'package:frontend/widgets/custom_app_bar.dart';
 import 'package:frontend/widgets/gradient_button.dart';
 import 'package:get/get.dart';
 import '../../services/cinema_service.dart';
+import '../../models/movie.dart';
 
 import '../../widgets/price_card.dart';
 import '../../widgets/dropdown_field.dart';
@@ -11,9 +12,12 @@ import '../../widgets/date_selector.dart';
 import '../../widgets/time_selector.dart';
 import '../../widgets/seating_key.dart';
 import '../../widgets/cinema_seat_layout.dart';
+import '../food_beverages/food_beverages_screen.dart';
 
 class TicketBookingScreen extends StatefulWidget {
-  const TicketBookingScreen({super.key});
+  final Movie? movie;
+
+  const TicketBookingScreen({super.key, this.movie});
 
   @override
   State<TicketBookingScreen> createState() => _TicketBookingScreenState();
@@ -40,6 +44,8 @@ class _TicketBookingScreenState extends State<TicketBookingScreen> {
 
   String? selectedLocation;
   String? selectedCinema;
+  DateTime? selectedDate;
+  String? selectedTime;
 
   List<Map<String, dynamic>> cinemaLocations = [];
   List<Map<String, dynamic>> cinemaHalls = [];
@@ -112,6 +118,19 @@ class _TicketBookingScreenState extends State<TicketBookingScreen> {
       }
     }
     _totalPrice = total;
+  }
+
+  int _getMonthFromDateString(String dayName) {
+    const dayToMonth = {
+      'Wed': 8,  // August
+      'Thur': 8,
+      'Fri': 8,
+      'Sat': 8,
+      'Sun': 8,
+      'Mon': 8,
+      'Tue': 8,
+    };
+    return dayToMonth[dayName] ?? 8;
   }
 
   @override
@@ -189,9 +208,26 @@ class _TicketBookingScreenState extends State<TicketBookingScreen> {
                       'Date & Time',
                     ),
                     const SizedBox(height: 16),
-                    DateSelector(),
+                    DateSelector(
+                      onDateSelected: (dateData) {
+                        setState(() {
+                          // Create a DateTime object from the selected date
+                          selectedDate = DateTime(
+                            2025, // Using current year as default
+                            _getMonthFromDateString(dateData['day']!),
+                            int.parse(dateData['date']!),
+                          );
+                        });
+                      },
+                    ),
                     const SizedBox(height: 24),
-                    TimeSelector(),
+                    TimeSelector(
+                      onTimeSelected: (time) {
+                        setState(() {
+                          selectedTime = time;
+                        });
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -379,7 +415,44 @@ class _TicketBookingScreenState extends State<TicketBookingScreen> {
               child: GradientButton(
                 text: 'Proceed',
                 onPressed: () {
-                  Get.toNamed(AppRoutes.foodBeverages);
+                  if (selectedSeats.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Please select at least one seat'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                    return;
+                  }
+                  if (selectedLocation == null || selectedCinema == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Please select cinema location and hall'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                    return;
+                  }
+                  if (selectedDate == null || selectedTime == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Please select date and time'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                    return;
+                  }
+
+                  Get.to(
+                    () => FoodBeveragesScreen(
+                      movie: widget.movie,
+                      cinema: '$selectedCinema, $selectedLocation',
+                      date: selectedDate!,
+                      time: selectedTime!,
+                      selectedSeats: selectedSeats,
+                      ticketPrice: _totalPrice,
+                    ),
+                  );
                 },
               ),
             ),

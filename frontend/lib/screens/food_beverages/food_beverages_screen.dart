@@ -4,10 +4,27 @@ import 'package:get/get.dart';
 import 'package:frontend/routes/app_routes.dart';
 import 'package:frontend/widgets/custom_app_bar.dart';
 import '../../models/food_item.dart';
+import '../../models/movie.dart';
 import '../../widgets/gradient_button.dart';
+import '../booking_summary/booking_summary_screen.dart';
 
 class FoodBeveragesScreen extends StatefulWidget {
-  const FoodBeveragesScreen({super.key});
+  final Movie? movie;
+  final String? cinema;
+  final DateTime? date;
+  final String? time;
+  final List<String>? selectedSeats;
+  final double? ticketPrice;
+
+  const FoodBeveragesScreen({
+    super.key,
+    this.movie,
+    this.cinema,
+    this.date,
+    this.time,
+    this.selectedSeats,
+    this.ticketPrice,
+  });
 
   @override
   State<FoodBeveragesScreen> createState() => _FoodBeveragesScreenState();
@@ -93,6 +110,19 @@ class _FoodBeveragesScreenState extends State<FoodBeveragesScreen> {
     return totalPrice;
   }
 
+  String _formatDate(DateTime? date) {
+    if (date == null) return 'Unknown Date';
+    return '${date.day} ${_getMonthName(date.month)} ${date.year}';
+  }
+
+  String _getMonthName(int month) {
+    const months = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ];
+    return months[month - 1];
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -104,7 +134,24 @@ class _FoodBeveragesScreenState extends State<FoodBeveragesScreen> {
             TextButton(
               onPressed: () {
                 // Handle skip action
-                Get.toNamed(AppRoutes.bookingSummary);
+                List<FoodItem> selectedItems = [];
+                selectedItems.addAll(combos.where((item) => item.quantity > 0));
+                selectedItems.addAll(snacks.where((item) => item.quantity > 0));
+                selectedItems.addAll(beverages.where((item) => item.quantity > 0));
+
+                Get.to(
+                  () => BookingSummaryScreen(
+                    movieTitle: widget.movie?.title ?? 'Unknown Movie',
+                    imageUrl: widget.movie?.imageUrl ?? '',
+                    cinema: widget.cinema ?? 'Unknown Cinema',
+                    date: _formatDate(widget.date),
+                    time: widget.time ?? 'Unknown Time',
+                    selectedSeats: widget.selectedSeats ?? [],
+                    ticketPrice: widget.ticketPrice ?? 0.0,
+                    selectedFoodItems: selectedItems,
+                    foodTotal: getTotalPrice(),
+                  ),
+                );
               },
               child: const Text(
                 AppStrings.skipButton,
@@ -164,7 +211,24 @@ class _FoodBeveragesScreenState extends State<FoodBeveragesScreen> {
                   child: GradientButton(
                     text: AppStrings.confirmButton,
                     onPressed: () {
-                      Get.toNamed(AppRoutes.bookingSummary);
+                      List<FoodItem> selectedItems = [];
+                      selectedItems.addAll(combos.where((item) => item.quantity > 0));
+                      selectedItems.addAll(snacks.where((item) => item.quantity > 0));
+                      selectedItems.addAll(beverages.where((item) => item.quantity > 0));
+
+                      Get.to(
+                        () => BookingSummaryScreen(
+                          movieTitle: widget.movie?.title ?? 'Unknown Movie',
+                          imageUrl: widget.movie?.imageUrl ?? '',
+                          cinema: widget.cinema ?? 'Unknown Cinema',
+                          date: _formatDate(widget.date),
+                          time: widget.time ?? 'Unknown Time',
+                          selectedSeats: widget.selectedSeats ?? [],
+                          ticketPrice: widget.ticketPrice ?? 0.0,
+                          selectedFoodItems: selectedItems,
+                          foodTotal: getTotalPrice(),
+                        ),
+                      );
                     },
 
                     height: 54,

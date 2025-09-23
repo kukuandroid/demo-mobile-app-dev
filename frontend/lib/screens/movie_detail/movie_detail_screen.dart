@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:frontend/routes/app_routes.dart';
 import 'package:get/get.dart';
 import 'package:frontend/models/movie.dart';
+import '../ticket_booking/ticket_booking_screen.dart';
 import '../../widgets/info_widgets.dart';
 import '../../widgets/rating_bar_widget.dart';
 import '../../widgets/review_card.dart';
@@ -357,7 +357,9 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
               child: GradientButton(
                 text: 'Book Ticket',
                 onPressed: () {
-                  Get.toNamed(AppRoutes.ticketBooking);
+                  Get.to(
+                    () => TicketBookingScreen(movie: widget.movie),
+                  );
                 },
                 height: 56,
                 borderRadius: BorderRadius.circular(16),
