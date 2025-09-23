@@ -52,66 +52,69 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
   }
 
   Widget _buildRatingsReviewTab() {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              Column(
-                children: [
-                  const Text('IMDb Rating'),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: List.generate(5, (index) {
-                      return Icon(
-                        index < 4 ? Icons.star : Icons.star_border,
-                        color: Colors.amber,
-                        size: 16,
-                      );
-                    }),
-                  ),
-                ],
-              ),
-              const SizedBox(width: 32),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Column(
                   children: [
-                    RatingBarWidget(label: '5 stars', percentage: 0.7),
-                    RatingBarWidget(label: '4 stars', percentage: 0.2),
-                    RatingBarWidget(label: '3 stars', percentage: 0.08),
-                    RatingBarWidget(label: '2 stars', percentage: 0.02),
-                    RatingBarWidget(label: '1 star', percentage: 0.0),
+                    const Text('IMDb Rating'),
+                    const SizedBox(height: 4),
+                    Row(
+                      children: List.generate(5, (index) {
+                        return Icon(
+                          index < 4 ? Icons.star : Icons.star_border,
+                          color: Colors.amber,
+                          size: 16,
+                        );
+                      }),
+                    ),
                   ],
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 24),
-          const Text(
-            'User Reviews',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 12),
-          ReviewCard(
-            title: 'Amazing cinematography!',
-            review:
-                'The visual effects and storytelling are incredible. A masterpiece of modern cinema.',
-            author: 'John D.',
-            rating: 5,
-          ),
-          const SizedBox(height: 12),
-          ReviewCard(
-            title: 'Mind-bending plot',
-            review:
-                'Complex but rewarding. You need to watch it multiple times to catch all the details.',
-            author: 'Sarah M.',
-            rating: 4,
-          ),
-        ],
+                const SizedBox(width: 32),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      RatingBarWidget(label: '5 stars', percentage: 0.7),
+                      RatingBarWidget(label: '4 stars', percentage: 0.2),
+                      RatingBarWidget(label: '3 stars', percentage: 0.08),
+                      RatingBarWidget(label: '2 stars', percentage: 0.02),
+                      RatingBarWidget(label: '1 star', percentage: 0.0),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+            const Text(
+              'User Reviews',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 12),
+            ReviewCard(
+              title: 'Amazing cinematography!',
+              review:
+                  'The visual effects and storytelling are incredible. A masterpiece of modern cinema.',
+              author: 'John D.',
+              rating: 5,
+            ),
+            const SizedBox(height: 12),
+            ReviewCard(
+              title: 'Mind-bending plot',
+              review:
+                  'Complex but rewarding. You need to watch it multiple times to catch all the details.',
+              author: 'Sarah M.',
+              rating: 4,
+            ),
+            const SizedBox(height: 20),
+          ],
+        ),
       ),
     );
   }
@@ -177,7 +180,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            expandedHeight: 280,
+            expandedHeight: 100,
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(background: _buildMovieHeader()),
             leading: IconButton(
@@ -334,7 +337,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
                           ],
                         ),
                         SizedBox(
-                          height: 480,
+                          height: MediaQuery.of(context).size.height * 0.5,
                           child: Padding(
                             padding: const EdgeInsets.all(12.0),
                             child: TabBarView(
