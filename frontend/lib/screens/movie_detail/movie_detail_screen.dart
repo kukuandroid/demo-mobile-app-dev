@@ -62,14 +62,6 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
             children: [
               Column(
                 children: [
-                  Text(
-                    widget.movie.title,
-                    style: const TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
                   const Text('IMDb Rating'),
                   const SizedBox(height: 4),
                   Row(
