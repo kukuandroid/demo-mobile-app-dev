@@ -63,7 +63,7 @@ cinemaapp/
 3. Create a `.env` file with your environment variables:
    ```env
    NODE_ENV=development
-   PORT=3000
+   PORT=4000
    CORS_ORIGIN=*
    ```
 
@@ -72,7 +72,7 @@ cinemaapp/
    npm run dev
    ```
 
-The API will be available at `http://localhost:3000`
+The API will be available at `http://localhost:4000`
 
 ### Frontend Setup
 
@@ -152,7 +152,7 @@ frontend/
 Create a `.env` file in the backend directory:
 ```env
 NODE_ENV=development
-PORT=3000
+PORT=4000
 CORS_ORIGIN=*
 ```
 
