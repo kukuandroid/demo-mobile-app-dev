@@ -154,14 +154,18 @@ class BookingSummaryScreen extends StatelessWidget {
       children: [
         Icon(icon, color: Colors.deepPurple, size: 22),
         const SizedBox(width: 16),
-        Text(label, style: TextStyle(fontSize: 16, color: Colors.grey[600])),
-        const Spacer(),
-        Text(
-          value,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-          textAlign: TextAlign.right,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
+        Expanded(
+          child: Text(label, style: TextStyle(fontSize: 16, color: Colors.grey[600])),
+        ),
+        const SizedBox(width: 8),
+        Flexible(
+          child: Text(
+            value,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            textAlign: TextAlign.right,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
       ],
     );
@@ -196,7 +200,10 @@ class BookingSummaryScreen extends StatelessWidget {
                     ),
                     Text(
                       'RM ${(item.price * item.quantity).toStringAsFixed(2)}',
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ],
                 ),
@@ -252,8 +259,7 @@ class BookingSummaryScreen extends StatelessWidget {
                 'Food & Beverages',
                 'RM ${foodTotal.toStringAsFixed(2)}',
               ),
-            if (foodTotal > 0)
-              const SizedBox(height: 8),
+            if (foodTotal > 0) const SizedBox(height: 8),
             _buildPaymentRow(
               AppStrings.convenienceFeeLabel,
               'RM ${convenienceFee.toStringAsFixed(2)}',
