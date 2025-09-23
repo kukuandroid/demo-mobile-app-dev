@@ -147,29 +147,8 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
             ),
           ),
         ),
+
         // Movie title and info
-        Positioned(
-          top: 16,
-          left: 16,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                widget.movie.title,
-                style: const TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                '${widget.movie.year} • ${widget.movie.rating}',
-                style: const TextStyle(fontSize: 16, color: Colors.white70),
-              ),
-            ],
-          ),
-        ),
       ],
     );
   }
