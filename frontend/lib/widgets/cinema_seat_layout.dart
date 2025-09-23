@@ -12,6 +12,8 @@ class CinemaSeatLayout extends StatefulWidget {
   final double rowSpacing;
   final double screenHeight;
   final String screenLabel;
+  final double regularSeatPrice;
+  final double vipSeatPrice;
 
   const CinemaSeatLayout({
     super.key,
@@ -26,6 +28,8 @@ class CinemaSeatLayout extends StatefulWidget {
     this.rowSpacing = 16.0,
     this.screenHeight = 40.0,
     this.screenLabel = 'SCREEN',
+    this.regularSeatPrice = 15.00,
+    this.vipSeatPrice = 25.00,
   });
 
   @override
@@ -34,6 +38,9 @@ class CinemaSeatLayout extends StatefulWidget {
 
 class _CinemaSeatLayoutState extends State<CinemaSeatLayout> {
   late List<String> _selectedSeats;
+  String? _lastTappedSeat;
+  double _lastTappedSeatPrice = 0.0;
+  OverlayEntry? _seatInfoOverlay;
 
   @override
   void initState() {
@@ -49,22 +56,98 @@ class _CinemaSeatLayoutState extends State<CinemaSeatLayout> {
     }
   }
 
+  @override
+  void dispose() {
+    _seatInfoOverlay?.remove();
+    super.dispose();
+  }
+
   String getSeatId(int row, int seat) {
-    return '\${String.fromCharCode(65 + row)}\${seat + 1}';
+    return '${String.fromCharCode(65 + row)}${seat + 1}';
   }
 
   void _toggleSeat(String seatId) {
     if (widget.unavailableSeats.containsKey(seatId)) {
       return;
     }
+
     setState(() {
       if (_selectedSeats.contains(seatId)) {
         _selectedSeats.remove(seatId);
+        _lastTappedSeat = null;
       } else {
         _selectedSeats.add(seatId);
+        _lastTappedSeat = seatId;
+        _lastTappedSeatPrice = _getSeatPrice(seatId);
       }
     });
+
     widget.onSeatsSelected(_selectedSeats);
+    _showSeatInfo(seatId);
+  }
+
+  double _getSeatPrice(String seatId) {
+    int row = seatId.codeUnitAt(0) - 65;
+    return widget.vipRows.contains(row) ? widget.vipSeatPrice : widget.regularSeatPrice;
+  }
+
+  void _showSeatInfo(String seatId) {
+    _seatInfoOverlay?.remove();
+
+    _seatInfoOverlay = OverlayEntry(
+      builder: (context) => Positioned(
+        top: MediaQuery.of(context).size.height * 0.4,
+        left: 0,
+        right: 0,
+        child: Center(
+          child: Material(
+            color: Colors.transparent,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              decoration: BoxDecoration(
+                color: Colors.deepPurple,
+                borderRadius: BorderRadius.circular(8),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    seatId,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'RM ${_getSeatPrice(seatId).toStringAsFixed(2)}',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    Overlay.of(context).insert(_seatInfoOverlay!);
+
+    Future.delayed(const Duration(seconds: 2), () {
+      _seatInfoOverlay?.remove();
+      _seatInfoOverlay = null;
+    });
   }
 
   @override
@@ -91,7 +174,7 @@ class _CinemaSeatLayoutState extends State<CinemaSeatLayout> {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.white.withOpacity(0.5),
+            color: Colors.white.withValues(alpha: 0.5),
             blurRadius: 20,
             spreadRadius: 5,
           ),
