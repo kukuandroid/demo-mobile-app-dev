@@ -25,11 +25,19 @@ class AppRoutes {
     ),
     GetPage(
       name: AppRoutes.ticketBooking,
-      page: () => const TicketBookingScreen(),
+      page: () => TicketBookingScreen(movie: Get.arguments as Movie?),
     ),
     GetPage(
       name: AppRoutes.bookingSummary,
-      page: () => const BookingSummaryScreen(),
+      page: () => const BookingSummaryScreen(
+        movieTitle: '',
+        imageUrl: '',
+        cinema: '',
+        date: '',
+        time: '',
+        selectedSeats: [],
+        ticketPrice: 0.0,
+      ),
     ),
     GetPage(
       name: AppRoutes.foodBeverages,
