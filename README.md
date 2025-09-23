@@ -155,28 +155,3 @@ NODE_ENV=development
 PORT=4000
 CORS_ORIGIN=*
 ```
-
-## Contributing
-
-1. Fork the repository
-2. Create a new branch for your feature:
-   ```bash
-   git checkout -b feature/your-feature-name
-   ```
-3. Commit your changes:
-   ```bash
-   git commit -m "Add your feature description"
-   ```
-4. Push to the branch:
-   ```bash
-   git push origin feature/your-feature-name
-   ```
-5. Create a new Pull Request
-
-## License
-
-This project is licensed under the ISC License.
-
-## Support
-
-For support and questions, please open an issue in the repository.
