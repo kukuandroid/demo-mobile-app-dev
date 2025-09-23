@@ -10,6 +10,7 @@ const { PORT, NODE_ENV } = require('./config');
 // Import routes
 const movieRoutes = require('./routes/movieRoutes');
 const foodBeverageRoutes = require('./routes/foodBeverageRoutes');
+const cinemaRoutes = require('./routes/cinemaRoutes');
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use(express.urlencoded({ extended: true }));
 // API routes
 app.use('/api/movies', movieRoutes);
 app.use('/api/food-beverages', foodBeverageRoutes);
+app.use('/api/cinemas', cinemaRoutes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {

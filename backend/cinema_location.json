@@ -1,0 +1,27 @@
+[
+    {
+      "name": "TGV Cinemas Suria KLCC",
+      "city": "Kuala Lumpur",
+      "state": "Wilayah Persekutuan",
+      "mall_or_area": "Suria KLCC"
+    },
+    {
+      "name": "TGV Cinemas Central i-City",
+      "city": "Shah Alam",
+      "state": "Selangor",
+      "mall_or_area": "Central i-City"
+    },
+    {
+      "name": "TGV Cinemas Tebrau City",
+      "city": "Johor Bahru",
+      "state": "Johor",
+      "mall_or_area": "Tebrau City"
+    },
+    {
+      "name": "TGV Cinemas 1st Avenue",
+      "city": "George Town",
+      "state": "Penang",
+      "mall_or_area": "1st Avenue"
+    }
+  ]
+  
