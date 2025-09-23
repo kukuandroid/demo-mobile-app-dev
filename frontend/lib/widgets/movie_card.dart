@@ -61,7 +61,12 @@ class MovieCard extends StatelessWidget {
                                       end: Alignment.bottomRight,
                                       colors: [
                                         Colors.grey[300]!,
-                                        Colors.grey[400]!,
+                                        const Color.fromARGB(
+                                          255,
+                                          128,
+                                          126,
+                                          126,
+                                        )!,
                                       ],
                                     ),
                                   ),
