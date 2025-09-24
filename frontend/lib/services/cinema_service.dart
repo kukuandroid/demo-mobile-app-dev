@@ -18,7 +18,9 @@ class CinemaService {
     }
   }
 
-  static Future<List<Map<String, dynamic>>> getCinemasByCity(String city) async {
+  static Future<List<Map<String, dynamic>>> getCinemasByCity(
+    String city,
+  ) async {
     try {
       final response = await HttpService.get('$_cinemasEndpoint/city/$city');
 

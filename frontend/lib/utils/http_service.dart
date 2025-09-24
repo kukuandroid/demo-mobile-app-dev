@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 class HttpService {
-  static const String baseUrl = 'http://192.168.1.5:4000/api';
+  static String get baseUrl =>
+      dotenv.env['BASE_URL'] ?? 'http://192.168.1.2:4000/api';
   static const Map<String, String> defaultHeaders = {
     'Content-Type': 'application/json',
   };

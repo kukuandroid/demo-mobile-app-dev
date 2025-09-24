@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/routes/app_routes.dart';
-import 'package:frontend/widgets/custom_app_bar.dart';
-import 'package:frontend/widgets/gradient_button.dart';
 import 'package:get/get.dart';
-import '../../services/cinema_service.dart';
-import '../../models/movie.dart';
-
+import '../../widgets/custom_app_bar.dart';
 import '../../widgets/price_card.dart';
-import '../../widgets/dropdown_field.dart';
-import '../../widgets/date_selector.dart';
-import '../../widgets/time_selector.dart';
-import '../../widgets/seating_key.dart';
-import '../../widgets/cinema_seat_layout.dart';
-import '../food_beverages/food_beverages_screen.dart';
+import '../../widgets/location_selection_card.dart';
+import '../../widgets/date_time_selection_card.dart';
+import '../../widgets/seat_selection_section.dart';
+import '../../widgets/booking_summary_card.dart';
+import '../../widgets/ticket_booking_bottom_bar.dart';
+import '../../controllers/ticket_booking_controller.dart';
+import '../../models/movie.dart';
 
 class TicketBookingScreen extends StatefulWidget {
   final Movie? movie;
@@ -24,113 +20,16 @@ class TicketBookingScreen extends StatefulWidget {
 }
 
 class _TicketBookingScreenState extends State<TicketBookingScreen> {
-  final List<String> selectedSeats = [];
-  final Map<String, bool> unavailableSeats = {
-    'A1': true,
-    'A2': true,
-    'B5': true,
-    'C3': true,
-    'D7': true,
-    'E4': true,
-    'F9': true,
-    'G2': true,
-    'H6': true,
-    'J8': true,
-  };
-  final List<int> vipRows = const [0, 1];
-  double _totalPrice = 0.0;
-  final double regularSeatPrice = 15.00;
-  final double vipSeatPrice = 25.00;
-
-  String? selectedLocation;
-  String? selectedCinema;
-  DateTime? selectedDate;
-  String? selectedTime;
-
-  List<Map<String, dynamic>> cinemaLocations = [];
-  List<Map<String, dynamic>> cinemaHalls = [];
-  bool isLoadingCinemas = true;
-
   @override
   void initState() {
     super.initState();
-    _loadCinemaLocations();
+    Get.put(TicketBookingController());
   }
 
-  Future<void> _loadCinemaLocations() async {
-    try {
-      final cinemas = await CinemaService.getAllCinemas();
-
-      setState(() {
-        cinemaLocations = List<Map<String, dynamic>>.from(cinemas);
-        isLoadingCinemas = false;
-      });
-    } catch (e) {
-      setState(() {
-        isLoadingCinemas = false;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Failed to load cinema locations: $e'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
-  }
-
-  void _onLocationSelected(String? location) {
-    setState(() {
-      selectedLocation = location;
-      selectedCinema = null;
-
-      if (location != null) {
-        cinemaHalls = cinemaLocations
-            .where((cinema) => cinema['city'] == location)
-            .map(
-              (cinema) => {
-                'name': cinema['name'],
-                'mall': cinema['mall_or_area'],
-              },
-            )
-            .toList();
-      } else {
-        cinemaHalls = [];
-      }
-    });
-  }
-
-  void _onSeatsSelected(List<String> seats) {
-    setState(() {
-      selectedSeats.clear();
-      selectedSeats.addAll(seats);
-      _calculateTotalPrice();
-    });
-  }
-
-  void _calculateTotalPrice() {
-    double total = 0;
-    for (var seatId in selectedSeats) {
-      int row = seatId.codeUnitAt(0) - 65;
-      if (vipRows.contains(row)) {
-        total += vipSeatPrice;
-      } else {
-        total += regularSeatPrice;
-      }
-    }
-    _totalPrice = total;
-  }
-
-  int _getMonthFromDateString(String dayName) {
-    const dayToMonth = {
-      'Wed': 8,  // August
-      'Thur': 8,
-      'Fri': 8,
-      'Sat': 8,
-      'Sun': 8,
-      'Mon': 8,
-      'Tue': 8,
-    };
-    return dayToMonth[dayName] ?? 8;
+  @override
+  void dispose() {
+    // Controller will be automatically disposed by GetX
+    super.dispose();
   }
 
   @override
@@ -138,326 +37,75 @@ class _TicketBookingScreenState extends State<TicketBookingScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: const CustomAppBar(title: 'Ticket Booking'),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            // Location Card
-            Card(
-              elevation: 2,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              clipBehavior: Clip.antiAlias,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildSectionHeader(Icons.location_on_outlined, 'Location'),
-                    const SizedBox(height: 16),
-                    isLoadingCinemas
-                        ? const Center(
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : DropdownField(
-                            hint: 'Select Location',
-                            items: cinemaLocations
-                                .map<String>(
-                                  (location) => location['city'] as String,
-                                )
-                                .toSet()
-                                .toList(),
-                            value: selectedLocation,
-                            onChanged: _onLocationSelected,
-                          ),
-                    const SizedBox(height: 16),
-                    DropdownField(
-                      hint: 'Select Cinema Hall',
-                      items: cinemaHalls
-                          .map<String>((hall) => hall['name'] as String)
-                          .toList(),
-                      value: selectedCinema,
-                      onChanged: (value) {
-                        setState(() {
-                          selectedCinema = value;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 24),
+      body: GetBuilder<TicketBookingController>(
+        builder: (controller) {
+          if (controller.errorMessage.value.isNotEmpty &&
+              !controller.isLoadingCinemas.value) {
+            return _buildErrorState(controller);
+          }
 
-            // Date & Time Card
-            Card(
-              elevation: 2,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              clipBehavior: Clip.antiAlias,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildSectionHeader(
-                      Icons.calendar_today_outlined,
-                      'Date & Time',
-                    ),
-                    const SizedBox(height: 16),
-                    DateSelector(
-                      onDateSelected: (dateData) {
-                        setState(() {
-                          // Create a DateTime object from the selected date
-                          selectedDate = DateTime(
-                            2025, // Using current year as default
-                            _getMonthFromDateString(dateData['day']!),
-                            int.parse(dateData['date']!),
-                          );
-                        });
-                      },
-                    ),
-                    const SizedBox(height: 24),
-                    TimeSelector(
-                      onTimeSelected: (time) {
-                        setState(() {
-                          selectedTime = time;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 24),
-
-            PriceCard(priceRange: 'RM 15.00 - RM 25.00'),
-            const SizedBox(height: 24),
-
-            _buildSectionHeader(Icons.event_seat_outlined, 'Select Seats'),
-            const SizedBox(height: 16),
-            const SeatingKey(),
-            const SizedBox(height: 16),
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade900,
-                borderRadius: BorderRadius.circular(16.0),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.3),
-                    blurRadius: 15,
-                    offset: const Offset(0, 5),
-                  ),
-                ],
-              ),
-              child: CinemaSeatLayout(
-                rows: 10,
-                seatsPerRow: 10,
-                vipRows: vipRows,
-                selectedSeats: selectedSeats,
-                onSeatsSelected: _onSeatsSelected,
-                unavailableSeats: unavailableSeats,
-                seatSize: 26.0,
-                seatSpacing: 6.0,
-                rowSpacing: 12.0,
-                screenHeight: 50.0,
-                screenLabel: 'SCREEN',
-                regularSeatPrice: regularSeatPrice,
-                vipSeatPrice: vipSeatPrice,
-              ),
-            ),
-            const SizedBox(height: 24),
-            _buildBookingSummary(),
-          ],
-        ),
-      ),
-      bottomNavigationBar: _buildBottomButtons(),
-    );
-  }
-
-  Widget _buildBookingSummary() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildSectionHeader(Icons.chair_outlined, 'Your Selection'),
-        const SizedBox(height: 16),
-        Card(
-          elevation: 2,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Padding(
+          return SingleChildScrollView(
             padding: const EdgeInsets.all(16.0),
             child: Column(
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Seats (${selectedSeats.length})',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.grey.shade600,
-                          ),
-                        ),
-                        Text(
-                          'RM ${_totalPrice.toStringAsFixed(2)}',
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.deepPurple,
-                          ),
-                        ),
-                      ],
-                    ),
-                    if (selectedSeats.isNotEmpty)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8),
-                        child: Wrap(
-                          spacing: 8,
-                          runSpacing: 4,
-                          children: selectedSeats.map((seat) => Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: Colors.deepPurple.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(6),
-                              border: Border.all(color: Colors.deepPurple.withOpacity(0.3)),
-                            ),
-                            child: Text(
-                              seat,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.deepPurple,
-                              ),
-                            ),
-                          )).toList(),
-                        ),
-                      ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                const Divider(),
-                const SizedBox(height: 12),
-                SizedBox.shrink(),
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                // Location Selection Card
+                const LocationSelectionCard(),
+                const SizedBox(height: 24),
+
+                // Date & Time Selection Card
+                const DateTimeSelectionCard(),
+                const SizedBox(height: 24),
+
+                // Price Information
+                const PriceCard(priceRange: 'RM 15.00 - RM 25.00'),
+                const SizedBox(height: 24),
+
+                // Seat Selection Section
+                const SeatSelectionSection(),
+                const SizedBox(height: 24),
+
+                // Booking Summary
+                const BookingSummaryCard(),
               ],
             ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSectionHeader(IconData icon, String title) {
-    return Row(
-      children: [
-        Icon(icon, color: Colors.deepPurple, size: 24),
-        const SizedBox(width: 12),
-        Text(
-          title,
-          style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildBottomButtons() {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.08),
-            blurRadius: 20,
-            offset: const Offset(0, -5),
-          ),
-        ],
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(24),
-          topRight: Radius.circular(24),
-        ),
+          );
+        },
       ),
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            flex: 2,
-            child: SizedBox(
-              height: 55,
-              child: OutlinedButton(
-                onPressed: () => Get.back(),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.black87,
-                  side: BorderSide(color: Colors.grey.shade300),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                ),
-                child: const Text(
-                  'Cancel',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 16.0),
-          Expanded(
-            flex: 3,
-            child: SizedBox(
-              height: 55,
-              child: GradientButton(
-                text: 'Proceed',
-                onPressed: () {
-                  if (selectedSeats.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Please select at least one seat'),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
-                    return;
-                  }
-                  if (selectedLocation == null || selectedCinema == null) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Please select cinema location and hall'),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
-                    return;
-                  }
-                  if (selectedDate == null || selectedTime == null) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Please select date and time'),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
-                    return;
-                  }
+      bottomNavigationBar: TicketBookingBottomBar(movie: widget.movie),
+    );
+  }
 
-                  Get.to(
-                    () => FoodBeveragesScreen(
-                      movie: widget.movie,
-                      cinema: '$selectedCinema, $selectedLocation',
-                      date: selectedDate!,
-                      time: selectedTime!,
-                      selectedSeats: selectedSeats,
-                      ticketPrice: _totalPrice,
-                    ),
-                  );
-                },
+  Widget _buildErrorState(TicketBookingController controller) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.error_outline, color: Colors.red, size: 64),
+            const SizedBox(height: 16),
+            Text(
+              controller.errorMessage.value,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton.icon(
+              onPressed: controller.refresh,
+              icon: const Icon(Icons.refresh),
+              label: const Text('Retry'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.deepPurple,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 12,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
